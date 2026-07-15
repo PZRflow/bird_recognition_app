@@ -1,0 +1,20 @@
+{
+    "model_file": "mynanet_classifier.tflite",
+    "input_shape": [
+        1,
+        64,
+        300,
+        1
+    ],
+    "sample_rate_hz": 16000,
+    "clip_length_s": 3.0,
+    "n_mels": 64,
+    "n_fft": 1024,
+    "hop_length": 160,
+    "win_length": 400,
+    "fmin_hz": 300,
+    "fmax_hz": 8000,
+    "input_dtype": "float32",
+    "normalisation": "none",
+    "labels_file": "labels.txt"
+}

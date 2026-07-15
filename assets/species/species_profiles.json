@@ -1,0 +1,122 @@
+[
+  {
+    "commonName": "Abbott's Babbler",
+    "scientificName": "Malacocincla abbotti",
+    "habitat": "Lowland rainforest, swamp forests, and secondary growth.",
+    "imageUrl": "assets/images/malacocincla_abbotti.jpg"
+  },
+  {
+    "commonName": "Asian Koel",
+    "scientificName": "Eudynamys scolopaceus",
+    "habitat": "Open woodlands, gardens, and cultivated areas.",
+    "imageUrl": "assets/images/eudynamys_scolopaceus.jpg"
+  },
+  {
+    "commonName": "Black-crested Bulbul",
+    "scientificName": "Rubigula flaviventris",
+    "habitat": "Forest, forest edge, and dense scrub.",
+    "imageUrl": "assets/images/rubigula_flaviventris.jpg"
+  },
+  {
+    "commonName": "Black-naped Monarch",
+    "scientificName": "Hypothymis azurea",
+    "habitat": "Thick forests and well-wooded areas.",
+    "imageUrl": "assets/images/hypothymis_azurea.jpg"
+  },
+  {
+    "commonName": "Blue-eared Barbet",
+    "scientificName": "Psilopogon duvaucelii",
+    "habitat": "Lowland and submontane broadleaf evergreen forests.",
+    "imageUrl": "assets/images/psilopogon_duvaucelii.jpg"
+  },
+  {
+    "commonName": "Common Iora",
+    "scientificName": "Aegithina tiphia",
+    "habitat": "Gardens, scrub, and open forest.",
+    "imageUrl": "assets/images/aegithina_tiphia.jpg"
+  },
+  {
+    "commonName": "Common Tailorbird",
+    "scientificName": "Orthotomus sutorius",
+    "habitat": "Urban gardens, parks, and deciduous forests.",
+    "imageUrl": "assets/images/orthotomus_sutorius.jpg"
+  },
+  {
+    "commonName": "Dark-necked Tailorbird",
+    "scientificName": "Orthotomus atrogularis",
+    "habitat": "Dense evergreen forests, mangroves, and scrublands.",
+    "imageUrl": "assets/images/orthotomus_atrogularis.jpg"
+  },
+  {
+    "commonName": "Greater Racket-tailed Drongo",
+    "scientificName": "Dicrurus paradiseus",
+    "habitat": "Broadleaf forests, bamboo groves, and wooded areas.",
+    "imageUrl": "assets/images/dicrurus_paradiseus.jpg"
+  },
+  {
+    "commonName": "Grey-headed Canary-flycatcher",
+    "scientificName": "Culicicapa ceylonensis",
+    "habitat": "Hilly forests, wooded ravines, and garden settings.",
+    "imageUrl": "assets/images/culicicapa_ceylonensis.jpg"
+  },
+  {
+    "commonName": "Large-tailed Nightjar",
+    "scientificName": "Caprimulgus macrurus",
+    "habitat": "Forest edges, plantations, scrub, and open country.",
+    "imageUrl": "assets/images/caprimulgus_macrurus.jpg"
+  },
+  {
+    "commonName": "Little Spiderhunter",
+    "scientificName": "Arachnothera longirostra",
+    "habitat": "Undergrowth of forests, gardens, and banana plantations.",
+    "imageUrl": "assets/images/arachnothera_longirostra.jpg"
+  },
+  {
+    "commonName": "Mountain Tailorbird",
+    "scientificName": "Phyllergates cucullatus",
+    "habitat": "Montane forests, dense broadleaf scrubs, and bamboo.",
+    "imageUrl": "assets/images/phyllergates_cucullatus.jpg"
+  },
+  {
+    "commonName": "Olive-backed Sunbird",
+    "scientificName": "Cinnyris jugularis",
+    "habitat": "Coastal forests, gardens, parks, and agricultural land.",
+    "imageUrl": "assets/images/cinnyris_jugularis.jpg"
+  },
+  {
+    "commonName": "Pin-striped Tit-Babbler",
+    "scientificName": "Mixornis gularis",
+    "habitat": "Forest undergrowth, thickets, and disturbed forest patches.",
+    "imageUrl": "assets/images/mixornis_gularis.jpg"
+  },
+  {
+    "commonName": "Plaintive Cuckoo",
+    "scientificName": "Cacomantis merulinus",
+    "habitat": "Open forest, scrub, grassland, and gardens.",
+    "imageUrl": "assets/images/cacomantis_merulinus.jpg"
+  },
+  {
+    "commonName": "Puff-throated Babbler",
+    "scientificName": "Pellorneum ruficeps",
+    "habitat": "Bamboo groves, scrublands, and moist forest undergrowth.",
+    "imageUrl": "assets/images/pellorneum_ruficeps.jpg"
+  },
+  {
+    "commonName": "Pygmy Cupwing",
+    "scientificName": "Pnoepyga pusilla",
+    "habitat": "Damp floor of montane forests, rocks near water, and dense undergrowth.",
+    "imageUrl": "assets/images/pnoepyga_pusilla.jpg"
+  },
+  {
+    "commonName": "Yellow-bellied Prinia",
+    "scientificName": "Prinia flaviventris",
+    "habitat": "Reed beds, tall grass, scrub, and agricultural fields.",
+    "imageUrl": "assets/images/prinia_flaviventris.jpg"
+  },
+  {
+    "commonName": "Yellow-browed Warbler",
+    "scientificName": "Phylloscopus inornatus",
+    "habitat": "Woodlands, forest edges, orchards, and parks.",
+    "imageUrl": "assets/images/phylloscopus_inornatus.jpg"
+  }
+]

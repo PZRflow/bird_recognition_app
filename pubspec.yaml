@@ -9,15 +9,22 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   record: ^7.1.0
   permission_handler: ^12.0.3
   path_provider: ^2.1.2
+  fftea: ^1.5.0
   audioplayers: ^6.8.1
   avatar_glow: ^3.0.1
   file_selector: ^1.1.0
   sqflite: ^2.4.3
   path: ^1.9.1
-  intl: ^0.20.3
+  intl: ^0.20.2
+  tflite_flutter: ^0.12.1
+  http: ^1.2.1
+  ffmpeg_kit_flutter_new: ^4.3.2
+  google_fonts: ^6.1.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -25,3 +32,9 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  generate: true
+  assets:
+    - assets/model/
+    - assets/species/
+    - assets/images/
+    - assets/species.json

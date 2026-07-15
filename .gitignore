@@ -43,3 +43,21 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# MLOps Pipeline
+.env
+tools/.venv/
+data/
+dataset/
+__pycache__/
+models/
+*.mp3
+*.wav
+*.h5
+
+# Local Flutter SDK
+flutter/
+
+# Build artifacts
+android/build/
+.vscode/

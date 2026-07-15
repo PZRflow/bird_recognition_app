@@ -5,7 +5,7 @@ class BirdPrediction {
   final String description;
   final String imageUrl;
 
-  BirdPrediction({
+  const BirdPrediction({
     required this.commonName,
     required this.scientificName,
     required this.score,

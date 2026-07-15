@@ -1,0 +1,162 @@
+[
+  {
+    "id": 0,
+    "scientific": "Malacocincla abbotti",
+    "english": "Abbott's Babbler",
+    "malay": "Rembah Rimba Abbott",
+    "french": "Akalat d'Abbott",
+    "imageUrl": "assets/images/malacocincla_abbotti.jpg"
+  },
+  {
+    "id": 1,
+    "scientific": "Eudynamys scolopaceus",
+    "english": "Asian Koel",
+    "malay": "Burung Turi",
+    "french": "Coucou koël",
+    "imageUrl": "assets/images/eudynamys_scolopaceus.jpg"
+  },
+  {
+    "id": 2,
+    "scientific": "Rubigula flaviventris",
+    "english": "Black-crested Bulbul",
+    "malay": "Merbah Jambul Hitam",
+    "french": "Bulbul à huppe noire",
+    "imageUrl": "assets/images/rubigula_flaviventris.jpg"
+  },
+  {
+    "id": 3,
+    "scientific": "Hypothymis azurea",
+    "english": "Black-naped Monarch",
+    "malay": "Sambar Biru",
+    "french": "Monarque azuré",
+    "imageUrl": "assets/images/hypothymis_azurea.jpg"
+  },
+  {
+    "id": 4,
+    "scientific": "Psilopogon duvaucelii",
+    "english": "Blue-eared Barbet",
+    "malay": "Takur Telinga Biru",
+    "french": "Barbu à oreillons bleus",
+    "imageUrl": "assets/images/psilopogon_duvaucelii.jpg"
+  },
+  {
+    "id": 5,
+    "scientific": "Aegithina tiphia",
+    "english": "Common Iora",
+    "malay": "Burung Kunyit Kecil",
+    "french": "Iora de Chine",
+    "imageUrl": "assets/images/aegithina_tiphia.jpg"
+  },
+  {
+    "id": 6,
+    "scientific": "Orthotomus sutorius",
+    "english": "Common Tailorbird",
+    "malay": "Laki Padi Biasa",
+    "french": "Couturière à longue queue",
+    "imageUrl": "assets/images/orthotomus_sutorius.jpg"
+  },
+  {
+    "id": 7,
+    "scientific": "Orthotomus atrogularis",
+    "english": "Dark-necked Tailorbird",
+    "malay": "Laki Padi Leher Hitam",
+    "french": "Couturière à col noir",
+    "imageUrl": "assets/images/orthotomus_atrogularis.jpg"
+  },
+  {
+    "id": 8,
+    "scientific": "Dicrurus paradiseus",
+    "english": "Greater Racket-tailed Drongo",
+    "malay": "Burung Hamba Kera",
+    "french": "Drongo à raquettes",
+    "imageUrl": "assets/images/dicrurus_paradiseus.jpg"
+  },
+  {
+    "id": 9,
+    "scientific": "Culicicapa ceylonensis",
+    "english": "Grey-headed Canary-flycatcher",
+    "malay": "Sambar-Kuning Kepala Kelabu",
+    "french": "Gobe-mouche canari",
+    "imageUrl": "assets/images/culicicapa_ceylonensis.jpg"
+  },
+  {
+    "id": 10,
+    "scientific": "Caprimulgus macrurus",
+    "english": "Large-tailed Nightjar",
+    "malay": "Burung Tukang Kubur",
+    "french": "Engoulevent à queue large",
+    "imageUrl": "assets/images/caprimulgus_macrurus.jpg"
+  },
+  {
+    "id": 11,
+    "scientific": "Arachnothera longirostra",
+    "english": "Little Spiderhunter",
+    "malay": "Kelichap Jantung Kecil",
+    "french": "Petit Arachnothère",
+    "imageUrl": "assets/images/arachnothera_longirostra.jpg"
+  },
+  {
+    "id": 12,
+    "scientific": "Phyllergates cucullatus",
+    "english": "Mountain Tailorbird",
+    "malay": "Laki Padi Gunung",
+    "french": "Couturière montagnarde",
+    "imageUrl": "assets/images/phyllergates_cucullatus.jpg"
+  },
+  {
+    "id": 13,
+    "scientific": "Cinnyris jugularis",
+    "english": "Olive-backed Sunbird",
+    "malay": "Kelichap Kelapa",
+    "french": "Souimanga à dos vert",
+    "imageUrl": "assets/images/cinnyris_jugularis.jpg"
+  },
+  {
+    "id": 14,
+    "scientific": "Mixornis gularis",
+    "english": "Pin-striped Tit-Babbler",
+    "malay": "Rembah Rimba Belang",
+    "french": "Timalie à gorge rayée",
+    "imageUrl": "assets/images/mixornis_gularis.jpg"
+  },
+  {
+    "id": 15,
+    "scientific": "Cacomantis merulinus",
+    "english": "Plaintive Cuckoo",
+    "malay": "Burung Mati Anak",
+    "french": "Coucou plaintif",
+    "imageUrl": "assets/images/cacomantis_merulinus.jpg"
+  },
+  {
+    "id": 16,
+    "scientific": "Pellorneum ruficeps",
+    "english": "Puff-throated Babbler",
+    "malay": "Rembah Rimba Berbintik",
+    "french": "Akalat à calotte rousse",
+    "imageUrl": "assets/images/pellorneum_ruficeps.jpg"
+  },
+  {
+    "id": 17,
+    "scientific": "Pnoepyga pusilla",
+    "english": "Pygmy Cupwing",
+    "malay": "Burung Ekor Pendek Pygmy",
+    "french": "Pnoépyge naine",
+    "imageUrl": "assets/images/pnoepyga_pusilla.jpg"
+  },
+  {
+    "id": 18,
+    "scientific": "Prinia flaviventris",
+    "english": "Yellow-bellied Prinia",
+    "malay": "Perenjak Perut Kuning",
+    "french": "Prinia à ventre jaune",
+    "imageUrl": "assets/images/prinia_flaviventris.jpg"
+  },
+  {
+    "id": 19,
+    "scientific": "Phylloscopus inornatus",
+    "english": "Yellow-browed Warbler",
+    "malay": "Cekup Alis Kuning",
+    "french": "Pouillot à grands sourcils",
+    "imageUrl": "assets/images/phylloscopus_inornatus.jpg"
+  }
+]
