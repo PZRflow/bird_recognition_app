@@ -37,7 +37,7 @@ class _SpeciesDetailScreenState extends State<SpeciesDetailScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: const Text('Profils d\'Espèces', style: TextStyle(color: Colors.white)),
+        title: const Text('Species Profiles', style: TextStyle(color: Colors.white)),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () => Navigator.pop(context),
@@ -55,7 +55,7 @@ class _SpeciesDetailScreenState extends State<SpeciesDetailScreen> {
         child: _isLoading
             ? const Center(child: CircularProgressIndicator())
             : _speciesList.isEmpty
-                ? const Center(child: Text('Aucune donnée disponible', style: TextStyle(color: Colors.white)))
+                ? const Center(child: Text('No data available', style: TextStyle(color: Colors.white)))
                 : ListView.builder(
                     padding: const EdgeInsets.only(top: 100, left: 16, right: 16, bottom: 40),
                     itemCount: _speciesList.length,

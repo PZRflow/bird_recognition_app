@@ -111,20 +111,20 @@ class RecognitionService {
     
     if (_modelNotFound) {
       return [const BirdPrediction(
-        commonName: 'Modèle TFLite Absent',
-        scientificName: 'Veuillez exécuter le pipeline Python',
+        commonName: 'TFLite Model Missing',
+        scientificName: 'Please run the Python pipeline',
         score: 0.0,
-        description: 'Le modèle bird_classifier.tflite est introuvable. Vous devez d\'abord l\'importer.',
+        description: 'The bird_classifier.tflite model was not found. You must import it first.',
         imageUrl: 'https://images.unsplash.com/photo-1555169062-0133c8dc7c76?w=800',
       ),];
     }
 
     if (_interpreter == null || _labels == null || _labels!.isEmpty) {
        return [const BirdPrediction(
-         commonName: 'Erreur',
-         scientificName: 'Modèle non chargé',
+         commonName: 'Error',
+         scientificName: 'Model not loaded',
          score: 0.0,
-         description: 'Impossible de charger le modèle ou les labels.',
+         description: 'Unable to load model or labels.',
          imageUrl: 'https://images.unsplash.com/photo-1555169062-0133c8dc7c76?w=800',
        ),];
     }
@@ -307,9 +307,9 @@ class RecognitionService {
     if (processedSegments == 0 || bestProbs == null) {
       return [const BirdPrediction(
         commonName: 'Silence',
-        scientificName: 'Aucun son',
+        scientificName: 'No sound',
         score: 1.0,
-        description: 'Le volume est trop faible, c\'est du silence ou l\'analyse a échoué.',
+        description: 'The volume is too low, it is either silence or the analysis failed.',
         imageUrl: 'https://images.unsplash.com/photo-1555169062-0133c8dc7c76?w=800',
       ),];
     }
@@ -330,10 +330,10 @@ class RecognitionService {
     // Confidence threshold
     if (results[0]['score'] < 0.15) {
       return [const BirdPrediction(
-        commonName: 'Espèce inconnue',
-        scientificName: 'Non identifié',
+        commonName: 'Unknown species',
+        scientificName: 'Unidentified',
         score: 1.0,
-        description: 'Le chant ne correspond à aucune des espèces connues avec certitude.',
+        description: 'The song does not match any known species with certainty.',
         imageUrl: 'https://images.unsplash.com/photo-1555169062-0133c8dc7c76?w=800',
       ),];
     }
@@ -347,7 +347,7 @@ class RecognitionService {
       final String image = names['imageUrl']!; 
       String description = names['english']!;
       if (isClipped && i == 0) {
-        description = "Attention: Signal saturé (trop fort). $description";
+        description = "Warning: Signal saturated (too loud). $description";
       }
 
       topPredictions.add(BirdPrediction(

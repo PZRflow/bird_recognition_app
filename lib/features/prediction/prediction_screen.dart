@@ -59,7 +59,7 @@ class _PredictionScreenState extends State<PredictionScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: const Text('Résultats (Top 3)', style: TextStyle(color: Colors.white)),
+        title: const Text('Results (Top 3)', style: TextStyle(color: Colors.white)),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () => Navigator.pop(context),
@@ -80,7 +80,7 @@ class _PredictionScreenState extends State<PredictionScreen> {
                 children: [
                   CircularProgressIndicator(color: Theme.of(context).colorScheme.primary),
                   const SizedBox(height: 20),
-                  const Text('Analyse par le réseau de neurones...', style: TextStyle(color: Colors.white70)),
+                  const Text('Analyzing by neural network...', style: TextStyle(color: Colors.white70)),
                 ],
               )
             : _predictions.isNotEmpty 
@@ -92,7 +92,7 @@ class _PredictionScreenState extends State<PredictionScreen> {
                       return _buildPredictionCard(pred, index);
                     },
                   )
-                : const Center(child: Text('Échec de l\'analyse.', style: TextStyle(color: Colors.white))),
+                : const Center(child: Text('Analysis failed.', style: TextStyle(color: Colors.white))),
       ),
     );
   }
@@ -161,7 +161,7 @@ class _PredictionScreenState extends State<PredictionScreen> {
                             color: Theme.of(context).colorScheme.primary,
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          child: const Text('Meilleur Choix', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 12)),
+                          child: const Text('Best Choice', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 12)),
                         ),
                     ],
                   ),

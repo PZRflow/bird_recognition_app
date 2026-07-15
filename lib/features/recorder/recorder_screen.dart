@@ -93,7 +93,7 @@ class _RecorderScreenState extends State<RecorderScreen> {
             ),
             const SizedBox(height: 40),
             Text(
-              _isRecording ? 'Écoute de la nature...' : 'Appuyez pour enregistrer',
+              _isRecording ? 'Listening to nature...' : 'Tap to record',
               style: TextStyle(
                 color: Colors.white.withValues(alpha: 0.8),
                 fontSize: 18,
@@ -113,7 +113,7 @@ class _RecorderScreenState extends State<RecorderScreen> {
                     ),);
                   },
                   icon: const Icon(Icons.analytics_outlined),
-                  label: const Text('Lancer l\'Identification', style: TextStyle(fontSize: 16)),
+                  label: const Text('Identify bird', style: TextStyle(fontSize: 16)),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
                   ),

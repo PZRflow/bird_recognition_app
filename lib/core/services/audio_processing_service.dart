@@ -8,20 +8,20 @@ class AudioProcessingService {
   static Future<Float32List> getAudioFloat32(String path) async {
     final file = File(path);
     if (!await file.exists()) {
-      throw Exception('Fichier audio introuvable');
+      throw Exception('Audio file not found');
     }
     
-    // Création d'un fichier de sortie temporaire pour le WAV converti
+    // Create a temporary output file for the converted WAV
     final tempDir = await getTemporaryDirectory();
     final tempOutputPath = '${tempDir.path}/temp_converted_${DateTime.now().millisecondsSinceEpoch}.wav';
     
-    // Commande FFmpeg :
-    // -y : écraser si existe
-    // -i "$path" : fichier source (MP3, WAV, etc.)
-    // -t 30 : Limiter aux 30 premières secondes
-    // -ac 1 : Mono
-    // -ar 16000 : 16 kHz
-    // -acodec pcm_s16le : PCM 16-bit Brut
+    // FFmpeg command:
+    // -y: overwrite if exists
+    // -i "$path": source file (MP3, WAV, etc.)
+    // -t 30: limit to the first 30 seconds
+    // -ac 1: mono
+    // -ar 16000: 16 kHz
+    // -acodec pcm_s16le: raw 16-bit PCM
     final command = '-y -i "$path" -t 30 -ac 1 -ar 16000 -acodec pcm_s16le "$tempOutputPath"';
     
     final session = await FFmpegKit.execute(command);
@@ -31,21 +31,21 @@ class AudioProcessingService {
       final wavFile = File(tempOutputPath);
       final bytes = await wavFile.readAsBytes();
       
-      // Nettoyer
+      // Clean up
       await wavFile.delete();
       
-      // On skippe l'en-tête WAV (44 octets) pour récupérer que les données PCM 16 bit
+      // Skip the WAV header (44 bytes) to extract only 16-bit PCM data
       final int16List = bytes.buffer.asInt16List(44);
       final float32List = Float32List(int16List.length);
       
-      // Normalisation entre -1.0 et 1.0
+      // Normalize between -1.0 and 1.0
       for (int i = 0; i < int16List.length; i++) {
         float32List[i] = int16List[i] / 32768.0;
       }
       
       return float32List;
     } else {
-      throw Exception('Erreur lors de la conversion FFmpeg');
+      throw Exception('Error during FFmpeg conversion');
     }
   }
 

@@ -31,7 +31,7 @@ class _ImportAudioScreenState extends State<ImportAudioScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: const Text('Importer', style: TextStyle(color: Colors.white)),
+        title: const Text('Import', style: TextStyle(color: Colors.white)),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () => Navigator.pop(context),
@@ -53,7 +53,7 @@ class _ImportAudioScreenState extends State<ImportAudioScreen> {
             Icon(Icons.upload_file_rounded, size: 100, color: Theme.of(context).colorScheme.secondary),
             const SizedBox(height: 30),
             Text(
-              'Sélectionnez un chant d\'oiseau',
+              'Select a bird song',
               style: TextStyle(
                 color: Colors.white.withValues(alpha: 0.9),
                 fontSize: 20,
@@ -62,7 +62,7 @@ class _ImportAudioScreenState extends State<ImportAudioScreen> {
             ),
             const SizedBox(height: 10),
             Text(
-              'Formats supportés : .mp3, .wav, .m4a',
+              'Supported formats: .mp3, .wav, .m4a',
               style: TextStyle(
                 color: Colors.white.withValues(alpha: 0.5),
                 fontSize: 14,
@@ -72,7 +72,7 @@ class _ImportAudioScreenState extends State<ImportAudioScreen> {
             ElevatedButton.icon(
               onPressed: _pickFile,
               icon: const Icon(Icons.folder_open_rounded),
-              label: const Text('Parcourir les fichiers'),
+              label: const Text('Browse files'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.surface,
                 foregroundColor: Colors.white,
@@ -119,7 +119,7 @@ class _ImportAudioScreenState extends State<ImportAudioScreen> {
                     ),);
                   },
                   icon: const Icon(Icons.analytics_outlined),
-                  label: const Text('Lancer l\'Identification', style: TextStyle(fontSize: 16)),
+                  label: const Text('Identify bird', style: TextStyle(fontSize: 16)),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
                   ),
