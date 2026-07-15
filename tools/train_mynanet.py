@@ -34,7 +34,7 @@ DATASET_DIR = os.path.join(os.path.dirname(__file__), '..', 'dataset')
 LABELS_FILE = os.path.join(DATASET_DIR, 'labels.json')
 
 if not os.path.exists(LABELS_FILE):
-    raise Exception(f"Fichier labels introuvable : {LABELS_FILE}. Veuillez d'abord préparer le dataset.")
+    raise Exception(f"Labels file not found: {LABELS_FILE}. Please prepare the dataset first.")
 
 with open(LABELS_FILE, 'r') as f:
     safe_labels = json.load(f)
