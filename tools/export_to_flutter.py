@@ -8,13 +8,13 @@ MODEL_PATH = os.path.join(DATASET_DIR, 'saved_model.keras')
 FLUTTER_ASSETS_DIR = os.path.join(os.path.dirname(__file__), '..', 'assets', 'model')
 
 if not os.path.exists(MODEL_PATH):
-    raise Exception("Modèle Keras introuvable. Veuillez d'abord lancer train_local.py.")
+    raise Exception("Keras model not found. Please run train_local.py first.")
 
-print("Chargement du modèle Keras...")
+print("Loading Keras model...")
 
 model = tf.keras.models.load_model(MODEL_PATH, compile=False)
 
-print("Conversion en TFLite (Float16 + Select TF Ops)...")
+print("Converting to TFLite (Float16 + Select TF Ops)...")
 converter = tf.lite.TFLiteConverter.from_keras_model(model)
 converter.optimizations = [tf.lite.Optimize.DEFAULT]
 converter.target_spec.supported_types = [tf.float16]
@@ -26,7 +26,7 @@ tflite_dest = os.path.join(FLUTTER_ASSETS_DIR, 'bird_classifier.tflite')
 with open(tflite_dest, 'wb') as f:
     f.write(tflite_model)
     
-print(f"Modèle exporté vers {tflite_dest}")
+print(f"Model exported to {tflite_dest}")
 
 # Convert labels.json to labels.txt (one per line)
 labels_src = os.path.join(DATASET_DIR, 'labels.json')
@@ -36,9 +36,9 @@ if os.path.exists(labels_src):
         labels = json.load(f)
     with open(labels_dest, 'w') as f:
         f.write('\n'.join(labels))
-    print(f"Fichier labels.txt généré vers {labels_dest}")
+    print(f"File labels.txt generated to {labels_dest}")
 else:
-    print("Fichier labels.json introuvable dans dataset/")
+    print("File labels.json not found in dataset/")
 
 # Generate model_metadata.json
 metadata_dest = os.path.join(FLUTTER_ASSETS_DIR, 'model_metadata.json')
@@ -60,6 +60,6 @@ metadata = {
 
 with open(metadata_dest, 'w') as f:
     json.dump(metadata, f, indent=4)
-print(f"Fichier model_metadata.json généré vers {metadata_dest}")
+print(f"File model_metadata.json generated to {metadata_dest}")
 
-print("\nOpération terminée avec succès. Vous pouvez maintenant lancer `flutter run` !")
+print("\nOperation completed successfully. You can now run `flutter run`!")
