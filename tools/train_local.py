@@ -2,7 +2,7 @@ import os
 import sys
 import glob
 
-# Charger les DLLs CUDA 11.2 installées via pip
+# Load CUDA 11.2 DLLs installed via pip
 try:
     site_packages = next(p for p in sys.path if 'site-packages' in p)
     nvidia_base = os.path.join(site_packages, 'nvidia')
@@ -16,7 +16,7 @@ try:
                 except AttributeError:
                     pass
 except Exception as e:
-    print("Info: Impossible d'ajouter les DLLs CUDA :", e)
+    print("Info: Unable to add CUDA DLLs:", e)
 
 import tensorflow as tf
 from tensorflow import keras
@@ -46,11 +46,11 @@ for label_name in safe_labels:
     if len(glob.glob(pattern)) > 0:
         active_labels.append(label_name)
 
-print(f"Trouvé {len(active_labels)} espèces avec des données sur {len(safe_labels)}.")
+print(f"Found {len(active_labels)} species with data out of {len(safe_labels)}.")
 safe_labels = active_labels
 NUM_CLASSES = len(safe_labels)
 
-# Paramètres audio Compact CNN
+# Compact CNN audio parameters
 SR = 16000
 N_FFT = 1024
 HOP = 512
@@ -143,11 +143,11 @@ def create_tf_dataset(files, labels, shuffle=False):
             tf.TensorSpec(shape=(), dtype=tf.int32)
         )
     )
-    # Mise en cache en RAM pour accélérer l'entraînement
+    # Cache in RAM to speed up training
     ds = ds.cache()
     if shuffle:
         ds = ds.shuffle(buffer_size=1000)
-    # Encodage One-Hot pour la Sigmoid
+    # One-Hot encoding for Sigmoid
     ds = ds.map(lambda x, y: (x, tf.one_hot(y, depth=NUM_CLASSES)), num_parallel_calls=tf.data.AUTOTUNE)
     return ds.batch(32).prefetch(tf.data.AUTOTUNE)
 
@@ -176,13 +176,13 @@ def build_model():
     x = layers.Conv2D(128, 3, activation="relu", padding="same")(x)
     x = layers.GlobalAveragePooling2D()(x)
     x = layers.Dropout(0.3)(x)
-    # Sigmoid activation pour Compact CNN
+    # Sigmoid activation for Compact CNN
     outputs = layers.Dense(NUM_CLASSES, activation="sigmoid")(x)
     return keras.Model(inputs, outputs, name="zamzam_compact_cnn")
 
 model = build_model()
 
-# Compilation avec Binary Crossentropy
+# Compile with Binary Crossentropy
 model.compile(
     optimizer=keras.optimizers.Adam(1e-3),
     loss="binary_crossentropy",

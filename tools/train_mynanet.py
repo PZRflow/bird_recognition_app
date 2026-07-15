@@ -2,7 +2,7 @@ import os
 import sys
 import glob
 
-# Charger les DLLs CUDA 11.2 installées via pip
+# Load CUDA 11.2 DLLs installed via pip
 try:
     site_packages = next(p for p in sys.path if 'site-packages' in p)
     nvidia_base = os.path.join(site_packages, 'nvidia')
@@ -16,7 +16,7 @@ try:
                 except AttributeError:
                     pass
 except Exception as e:
-    print("Info: Impossible d'ajouter les DLLs CUDA :", e)
+    print("Info: Unable to add CUDA DLLs:", e)
 
 import tensorflow as tf
 from tensorflow import keras
@@ -46,11 +46,11 @@ for label_name in safe_labels:
     if len(glob.glob(pattern)) > 0:
         active_labels.append(label_name)
 
-print(f"Trouvé {len(active_labels)} espèces avec des données sur {len(safe_labels)}.")
+print(f"Found {len(active_labels)} species with data out of {len(safe_labels)}.")
 safe_labels = active_labels
 NUM_CLASSES = len(safe_labels)
 
-# Paramètres audio MynaNet (optimal N_MELS = 64)
+# MynaNet audio parameters (optimal N_MELS = 64)
 SR = 16000
 N_FFT = 1024
 HOP = 160
@@ -147,12 +147,12 @@ def numpy_spec_augment(mel):
     # mel shape: (64, 300, 1)
     augmented = mel.copy()
     
-    # Masquage fréquentiel (max 8 canaux Mel sur 64)
+    # Frequency masking (max 8 Mel bands out of 64)
     f = np.random.randint(0, 8)
     f0 = np.random.randint(0, 64 - f)
     augmented[f0:f0+f, :, :] = 0.0
     
-    # Masquage temporel (max 35 trames sur 300)
+    # Time masking (max 35 frames out of 300)
     t = np.random.randint(0, 35)
     t0 = np.random.randint(0, 300 - t)
     augmented[:, t0:t0+t, :] = 0.0
@@ -191,7 +191,7 @@ def create_tf_dataset(files, labels, shuffle=False, augment=False, mixup=False):
             tf.TensorSpec(shape=(), dtype=tf.int32)
         )
     )
-    # Cacher le dataset de base en mémoire
+    # Cache base dataset in memory
     ds = ds.cache()
     
     if shuffle:
@@ -200,7 +200,7 @@ def create_tf_dataset(files, labels, shuffle=False, augment=False, mixup=False):
     if augment:
         ds = ds.map(tf_spec_augment, num_parallel_calls=tf.data.AUTOTUNE)
         
-    # Encodage One-Hot pour supporter Mixup et CategoricalCrossentropy
+    # One-Hot encoding to support Mixup and CategoricalCrossentropy
     ds = ds.map(lambda x, y: (x, tf.one_hot(y, depth=NUM_CLASSES)), num_parallel_calls=tf.data.AUTOTUNE)
     
     # Batch
@@ -317,15 +317,15 @@ def build_mynanet(num_classes):
     x = layers.ReLU(6., name='fc1_relu')(x)
     x = layers.Dropout(0.3, name='fc_drop')(x)
     
-    # Remplacement par l'activation SIGMOID pour la classification multi-label / robuste
+    # Replaced by SIGMOID activation for multi-label / robust classification
     outputs = layers.Dense(num_classes, activation='sigmoid', name='output')(x)
 
     return keras.Model(inputs, outputs, name="MynaNet_MBV3_SE")
 
 model = build_mynanet(NUM_CLASSES)
 
-# Compilation (Utilisation de binary_crossentropy pour multi-label Sigmoid)
-# On utilise CategoricalAccuracy nommée 'accuracy' pour conserver la compatibilité avec les métriques et callbacks
+# Compilation (Use binary_crossentropy for multi-label Sigmoid)
+# We use CategoricalAccuracy named 'accuracy' to preserve compatibility with metrics and callbacks
 model.compile(
     optimizer=keras.optimizers.Adam(1e-3),
     loss="binary_crossentropy",
@@ -345,16 +345,16 @@ history = model.fit(
     callbacks=[early_stop, reduce_lr, checkpoint]
 )
 
-# Sauvegarde du modèle complet
+# Save full model
 model.save(os.path.join(DATASET_DIR, 'saved_model_mynanet.keras'))
 
 # Plot accuracy
 plt.figure(figsize=(10, 6))
 plt.plot(history.history['accuracy'], label='Train Accuracy')
 plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
-plt.title('Courbe d\'apprentissage - MynaNet avec Sigmoid + BCE')
+plt.title('Learning Curve - MynaNet with Sigmoid + BCE')
 plt.ylabel('Accuracy')
 plt.xlabel('Epoch')
 plt.legend()
 plt.savefig(os.path.join(DATASET_DIR, 'mynanet_training_history.png'))
-print("Modèle MynaNet sauvegardé et courbes générées.")
+print("MynaNet model saved and curves generated.")
