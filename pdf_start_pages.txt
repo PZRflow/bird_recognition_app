@@ -1,0 +1,172 @@
+
+--- Page 1 ---
+
+--- Page 2 ---
+Cont ents
+1 IntroductiontoMobileBirdIDApps 1
+1.1 Motivation: FromBirdingtoaBirdShazam . . . . . . . . . . . . . . 1
+1.2 HowShazamWorks,andWhyItFailsonBirds . . . . . . . . . . . . 3
+1.3 TheBird-IDAppLandscapeToday . . . . . . . . . . . . . . . . . . . 5
+1.4 WhatZamZamWillDoDifferently . . . . . . . . . . . . . . . . . . . 6
+1.5 ProfessionalMonitoringVersusCitizenScience . . . . . . . . . . . . 8
+1.6 TheStackThisWorkUses . . . . . . . . . . . . . . . . . . . . . . . . 9
+1.7 KeyTakeaways . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+1.8 Exercises . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+1.9 Reflection . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+2 DeepLearningBasics 13
+2.1 WhatisMachineLearning? . . . . . . . . . . . . . . . . . . . . . . . . 13
+2.2 Trainingvs.Inference . . . . . . . . . . . . . . . . . . . . . . . . . . . 14
+2.3 NeuralNetworks: TheIntuition . . . . . . . . . . . . . . . . . . . . . 15
+2.4 RunningCodeinGoogleColab . . . . . . . . . . . . . . . . . . . . . 19
+2.5 YourFirstNeuralNetworkinCode . . . . . . . . . . . . . . . . . . . 20
+2.6 KeyTakeaways . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 22
+2.7 Exercises . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 22
+2.8 Reflection . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 22
+3 MLattheEdge 25
+3.1 ChoosinganInferenceTarget . . . . . . . . . . . . . . . . . . . . . . 25
+3.2 MLonMobileDevices . . . . . . . . . . . . . . . . . . . . . . . . . . . 26
+3.3 MLonEmbeddedDevices . . . . . . . . . . . . . . . . . . . . . . . . 28
+3.4 TheNESTTaxonomy . . . . . . . . . . . . . . . . . . . . . . . . . . . 29
+3.5 CostofDeployment . . . . . . . . . . . . . . . . . . . . . . . . . . . . 35
+3.6 KeyTakeaways . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 36
+3.7 Exercises . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 36
+3.8 Reflection . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 37
+4 DSPforAudio 39
+4.1 AudioSignals . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 39
+4.2 Frequency-DomainAnalysis . . . . . . . . . . . . . . . . . . . . . . . 41
+4.3 DigitalFiltering . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 42
+4.4 Mel-ScaleFrequencyAnalysis . . . . . . . . . . . . . . . . . . . . . . 46
+4.5 FeatureExtractionwithMFCCs . . . . . . . . . . . . . . . . . . . . . 48
+4.6 ComparingFeatureRepresentations . . . . . . . . . . . . . . . . . . 50
+4.7 KeyTakeaways . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 50
+4.8 Exercises . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 51
+4.9 Reflection . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 51
+ZamZam—ShazamforMalaysianBirds 1
+--- Page 3 ---
+5 R
+equirementsandArchitecture 53
+5.1 Scope: WhatShipsintheMVP . . . . . . . . . . . . . . . . . . . . . 53
+5.2 TheQuestionstoAnswerFirst . . . . . . . . . . . . . . . . . . . . . . 54
+5.2.1 ClipRecordingorLiveListening? . . . . . . . . . . . . . . . . 54
+5.2.2 OfflineorCloudProcessing? . . . . . . . . . . . . . . . . . . 54
+5.2.3 HowManyResultsShouldYouShow? . . . . . . . . . . . . 54
+5.2.4 HowManyBirdSpecies? . . . . . . . . . . . . . . . . . . . . . 54
+5.2.5 WhichPhonesShouldYouTestOn? . . . . . . . . . . . . . . 55
+5.2.6 Language . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 55
+5.2.7 RecommendedChoices . . . . . . . . . . . . . . . . . . . . . . 55
+5.3 TheAudioPipeline . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 55
+5.4 SystemArchitecture . . . . . . . . . . . . . . . . . . . . . . . . . . . . 55
+5.4.1 The audioModule. . . . . . . . . . . . . . . . . . . . . . . . . 56
+5.4.2 The dspModule . . . . . . . . . . . . . . . . . . . . . . . . . . 57
+5.4.3 The modelModule. . . . . . . . . . . . . . . . . . . . . . . . . 57
+5.4.4 The dataModule . . . . . . . . . . . . . . . . . . . . . . . . . 58
+5.4.5 The uiModule . . . . . . . . . . . . . . . . . . . . . . . . . . . 58
+5.4.6 ModuleDependencies . . . . . . . . . . . . . . . . . . . . . . 58
+5.5 DevelopmentEnvironment . . . . . . . . . . . . . . . . . . . . . . . . 59
+5.6 DeliverablesforWeek4 . . . . . . . . . . . . . . . . . . . . . . . . . 59
+5.7 KeyTakeaways . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 59
+5.8 Exercises . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 60
+5.9 Reflection . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 60
+6 UserInterfacesforMobileApps 61
+6.1 WhytheUIMatters . . . . . . . . . . . . . . . . . . . . . . . . . . . . 61
+6.2 TouchscreenUIElements . . . . . . . . . . . . . . . . . . . . . . . . . 62
+6.3 DesignPrinciplesforMobileApps . . . . . . . . . . . . . . . . . . . 63
+6.4 ALightweightDesignProcess . . . . . . . . . . . . . . . . . . . . . . 64
+6.5 UsabilityTestingWithFiveUsers . . . . . . . . . . . . . . . . . . . . 67
+6.6 TrendsandaCaseStudy . . . . . . . . . . . . . . . . . . . . . . . . . 68
+6.7 KeyTakeaways . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 69
+6.8 Exercises . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 70
+6.9 Reflection . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 70
+7 BirdSoundDatasetsandBaselineTraining 73
+7.1 OverviewofBioacousticDatasets . . . . . . . . . . . . . . . . . . . . 73
+7.2 MyGardenBird: TheZamZamTrainingDataset . . . . . . . . . . . . 76
+7.3 UsingMyGardenBirdinColab . . . . . . . . . . . . . . . . . . . . . . 77
+7.4 PreprocessingConventions . . . . . . . . . . . . . . . . . . . . . . . . 80
+7.5 Trainingthe12-SpeciesClassifier . . . . . . . . . . . . . . . . . . . . 81
+7.6 KeyTakeaways . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 84
+7.7 Exercises . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 85
+7.8 Reflection . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 85
+2 ZamZ
+am—ShazamforMalaysianBirds
+--- Page 4 ---
+8 Depl
+oyingtheModeltoMobile 87
+8.1 TheMobile-DeploymentPipeline . . . . . . . . . . . . . . . . . . . . 87
+8.2 ChoosinganArchitecture . . . . . . . . . . . . . . . . . . . . . . . . . 88
+8.3 ExportingtoTFLite . . . . . . . . . . . . . . . . . . . . . . . . . . . . 91
+8.4 Post-TrainingQuantisation . . . . . . . . . . . . . . . . . . . . . . . . 92
+8.5 VerifyingtheTFLiteModel . . . . . . . . . . . . . . . . . . . . . . . . 93
+8.6 PackagingforFlutter . . . . . . . . . . . . . . . . . . . . . . . . . . . 94
+8.7 KeyTakeaways . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 96
+8.8 Exercises . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 96
+8.9 Reflection . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 97
+9 ExpandingtheDataset: From12to50+Species 99
+9.1 WorkingwithDatasets . . . . . . . . . . . . . . . . . . . . . . . . . . 100
+9.2 DownloadingfromXeno-Canto . . . . . . . . . . . . . . . . . . . . . 100
+9.3 DownloadingfromMacaulayLibrary . . . . . . . . . . . . . . . . . . 102
+9.4 PreparingtheML-ReadyDataset . . . . . . . . . . . . . . . . . . . . 102
+9.5 AcceleratedLabelingwiththeStage4Annotator . . . . . . . . . . . 104
+9.6 Tier1: MyGardenBirdPlus(14Species,Broader-AsianSourcing) . 106
+9.7 Tier2: Movingto20Species—WhenGlobalSourcingBecomes
+Necessary . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 109
+9.8 Tier3: Scalingto50+Species—TheImbalanceProblem . . . . . 111
+9.9 End-to-EndWorkflow . . . . . . . . . . . . . . . . . . . . . . . . . . . 113
+9.10ChoosingYourTargetSpeciesCount . . . . . . . . . . . . . . . . . . 114
+9.11KeyTakeaways . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 115
+9.12Exercises . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 115
+9.13Reflection . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 116
+10GettingStartedwithFlutter 117
+10.1WhyFlutter . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 117
+10.2InstallingFlutter . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 119
+10.3YourFirstFlutterApp . . . . . . . . . . . . . . . . . . . . . . . . . . . 121
+10.4Widgets,State,Layout . . . . . . . . . . . . . . . . . . . . . . . . . . 122
+10.5NavigationandRouting . . . . . . . . . . . . . . . . . . . . . . . . . . 124
+10.6ExtendingBeyondWidgets: PlatformChannelsandLocalization . 124
+10.7KeyTakeaways . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 126
+10.8Exercises . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 126
+10.9Reflection . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 126
+11AudioCaptureandFeatureExtractiononDevice 129
+11.1MicrophonePermissions . . . . . . . . . . . . . . . . . . . . . . . . . 129
+11.2RecordingAudio . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 130
+11.3FromPCMtoMelSpectrogram . . . . . . . . . . . . . . . . . . . . . 131
+11.4WiringItAllTogether . . . . . . . . . . . . . . . . . . . . . . . . . . . 134
+11.5StreamingInference . . . . . . . . . . . . . . . . . . . . . . . . . . . . 134
+ZamZam—ShazamforMalaysianBirds 3
+--- Page 5 ---
+11.6H
+andlingEdgeCases . . . . . . . . . . . . . . . . . . . . . . . . . . . 135
+11.7KeyTakeaways . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 135
+11.8Exercises . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 136
+11.9Reflection . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 136
+12RunningTFLiteinFlutter 137
+12.1The tflite_flutterPlugin . . . . . . . . . . . . . . . . . . . . . . . 137
+12.2BundlingModelAssets . . . . . . . . . . . . . . . . . . . . . . . . . . 138
+12.3LoadingtheModel . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 139
+12.4RunningInference . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 140
+12.5HardwareAcceleration . . . . . . . . . . . . . . . . . . . . . . . . . . 141
+12.6LatencyandTroubleshooting . . . . . . . . . . . . . . . . . . . . . . 142
+12.7KeyTakeaways . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 144
+12.8Exercises . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 144
+12.9Reflection . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 145
+13FieldTestingandUsability 147
+13.1WhyFieldTestingisNon-Negotiable . . . . . . . . . . . . . . . . . 147
+13.2TheFourEnvironments . . . . . . . . . . . . . . . . . . . . . . . . . . 148
+13.3MetricstoCollect . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 149
+13.4UsabilityTestingwithFiveBirders . . . . . . . . . . . . . . . . . . . 151
+13.5TurningFindingsIntoaBugList . . . . . . . . . . . . . . . . . . . . . 152
+13.6DeliverablesforWeek9 . . . . . . . . . . . . . . . . . . . . . . . . . 154
+13.7KeyTakeaways . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 154
+13.8Exercises . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 155
+13.9Reflection . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 155
+14PublishingandLocalization 157
+14.1SpeciesNamesintheCatalogue . . . . . . . . . . . . . . . . . . . . 157
+14.2LocalizingtheUI:PlanforMalayandFrench . . . . . . . . . . . . . 159
+14.3AppIconsandBranding . . . . . . . . . . . . . . . . . . . . . . . . . . 163
+14.4ReleaseBuilds . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 163
+14.5StoreListings . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 165
+14.6AfterYouSubmit . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 166
+14.7KeyTakeaways . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 169
+14.8Exercises . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 169
+14.9Reflection . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 170
+4 ZamZ
+am—ShazamforMalaysianBirds
