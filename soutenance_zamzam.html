@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Soutenance ZamZam — Shazam des Oiseaux de Malaisie</title>
+  <title>ESEO S7 EPI Oral Defense — ZamZam Project</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Google Fonts: Outfit (Titres) & Inter (Texte) -->
+  <!-- Google Fonts: Outfit (Titles) & Inter (Body) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -19,498 +19,334 @@
             outfit: ['Outfit', 'sans-serif'],
           },
           colors: {
-            darkbg: '#0F1A15',
-            darkpanel: '#132B20',
-            primary: '#00E676', // Vert Néon
-            secondary: '#00B0FF', // Bleu Néon
+            brandbg: '#0A0E0C',
+            brandpanel: '#111815',
+            primary: '#00E676', // Neon Green
+            secondary: '#00B0FF', // Neon Blue
           }
         }
       }
     }
   </script>
   <style>
-    /* Custom Scrollbar for code blocks or contents */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
+    /* Fixed 16:9 Aspect Ratio presentation view for projectors */
+    .slide-viewport {
+      aspect-ratio: 16 / 9;
+      width: 100%;
+      max-width: 1200px;
     }
-    ::-webkit-scrollbar-track {
-      background: rgba(255, 255, 255, 0.05);
-    }
-    ::-webkit-scrollbar-thumb {
-      background: rgba(0, 230, 118, 0.3);
-      border-radius: 3px;
-    }
-    /* Slide Transition animations */
     .slide-active {
       display: flex !important;
-      animation: fadeIn 0.5s ease-out forwards;
+      animation: slideTransition 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
     }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+    @keyframes slideTransition {
+      from { opacity: 0; transform: translateX(20px); }
+      to { opacity: 1; transform: translateX(0); }
     }
   </style>
 </head>
-<body class="bg-darkbg text-white font-sans overflow-hidden select-none">
+<body class="bg-brandbg text-white font-sans overflow-hidden flex flex-col items-center justify-center min-h-screen p-4">
 
-  <!-- Main Presentation Container -->
-  <div class="h-screen w-screen flex flex-col justify-between p-8 md:p-12 relative">
+  <!-- Presentation Aspect Frame (16:9) resembling Google Slides / PowerPoint -->
+  <div class="slide-viewport bg-brandpanel border border-white/10 rounded-2xl shadow-2xl p-10 flex flex-col justify-between relative overflow-hidden">
     
-    <!-- Header (Constant on all slides) -->
-    <header class="flex justify-between items-center z-10">
-      <div class="flex items-center space-x-3">
-        <img src="assets/images/logo.png" alt="Logo" class="w-12 h-12 rounded-full border border-primary/30 shadow-[0_0_15px_rgba(0,230,118,0.2)]">
-        <div>
-          <span class="font-outfit font-extrabold text-2xl tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">ZAMZAM</span>
-          <span class="text-xs text-white/50 block tracking-widest font-semibold uppercase">Shazam for Birds</span>
-        </div>
+    <!-- Slide Header -->
+    <header class="flex justify-between items-center border-b border-white/5 pb-4">
+      <div class="flex items-center space-x-2">
+        <span class="font-outfit font-black text-xl text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">ESEO S7 EPI</span>
+        <span class="text-white/40 text-xs">|</span>
+        <span class="text-white/60 text-xs tracking-wider uppercase font-semibold font-mono">International Internship Defense</span>
       </div>
-      <div class="text-right hidden sm:block">
-        <h4 class="text-sm font-semibold text-white/70">Soutenance de Projet</h4>
-        <p class="text-xs text-primary/70 font-mono">Deep Learning & Mobile Dev</p>
+      <div class="text-right">
+        <span class="text-xs text-primary/80 font-mono tracking-widest font-semibold uppercase">Malaysia • 2026</span>
       </div>
     </header>
 
-    <!-- Slide Content Box -->
-    <main class="flex-grow flex items-center justify-center py-6 z-10">
-      
-      <!-- SLIDE 1: Title -->
-      <section class="slide hidden flex-col items-center text-center max-w-4xl slide-active">
-        <div class="mb-8 relative">
-          <div class="absolute inset-0 bg-primary/20 rounded-full filter blur-3xl animate-pulse"></div>
-          <img src="assets/images/logo.png" alt="ZamZam Logo Big" class="w-48 h-48 rounded-full border-2 border-primary shadow-[0_0_35px_rgba(0,230,118,0.4)] relative">
-        </div>
-        <h1 class="font-outfit font-black text-5xl md:text-7xl leading-none tracking-tight mb-4">
-          ZAMZAM
+    <!-- Slides Container -->
+    <main class="flex-grow flex items-center justify-center py-6">
+
+      <!-- SLIDE 1: Title Slide -->
+      <section class="slide hidden flex-col items-center text-center slide-active w-full">
+        <h1 class="font-outfit font-black text-5xl md:text-6xl mb-3 tracking-tight">
+          ZAMZAM PROJECT
         </h1>
-        <p class="font-outfit font-semibold text-2xl md:text-3xl text-primary mb-8 tracking-wide">
-          "Shazam" pour les Oiseaux de Malaisie
+        <p class="font-outfit font-semibold text-xl text-primary mb-6 tracking-wide">
+          An Offline "Shazam" App for Malaysian Bird Bioacoustics
         </p>
-        <div class="h-1 w-24 bg-gradient-to-r from-primary to-secondary rounded-full mb-8"></div>
-        <p class="text-lg text-white/60 max-w-xl">
-          Une application mobile Flutter hors-ligne combinant deep learning et traitement de signal pour identifier la biodiversité.
-        </p>
-      </section>
-
-      <!-- SLIDE 2: Problematic -->
-      <section class="slide hidden flex-col max-w-5xl w-full">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        <div class="h-1 w-20 bg-gradient-to-r from-primary to-secondary rounded-full mb-8"></div>
+        <div class="grid grid-cols-2 gap-8 text-left text-sm text-white/70 max-w-md bg-black/30 p-4 rounded-xl border border-white/5">
           <div>
-            <span class="text-primary font-mono text-sm uppercase tracking-widest block mb-2">// Problématique</span>
-            <h2 class="font-outfit font-bold text-4xl mb-6">Pourquoi Shazam échoue-t-il sur la nature ?</h2>
-            <div class="space-y-4 text-white/80">
-              <p>
-                <strong>Shazam traditionnel</strong> repose sur l'extraction d'empreintes acoustiques (hashes) issues de morceaux de musique calmes et standardisés en studio.
-              </p>
-              <div class="bg-red-500/10 border-l-4 border-red-500 p-4 rounded-r-lg my-4">
-                <p class="text-sm font-semibold text-red-300">Les bruits de la nature brisent cette logique :</p>
-                <ul class="list-disc list-inside text-xs mt-2 space-y-1 text-red-200/80">
-                  <li>Bruit de fond omniprésent (vent, pluie, insectes).</li>
-                  <li>Variabilité biologique d'un même oiseau (dialectes).</li>
-                  <li>Superposition acoustique (plusieurs oiseaux chantent en même temps).</li>
-                </ul>
-              </div>
-              <p>
-                <strong>La Solution :</strong> Remplacer le hachage par de l'<strong>intelligence artificielle (Deep Learning)</strong> capable de généraliser et d'abstraire les bruits parasites.
-              </p>
-            </div>
-          </div>
-          <div class="bg-darkpanel/40 border border-white/10 rounded-3xl p-8 backdrop-blur-md shadow-2xl">
-            <h3 class="font-outfit font-semibold text-xl mb-4 text-secondary">Objectifs du projet ZamZam</h3>
-            <ul class="space-y-4 text-sm">
-              <li class="flex items-start">
-                <span class="text-primary mr-3 text-lg">✓</span>
-                <div>
-                  <strong class="text-white">Classification Multi-Label</strong>
-                  <p class="text-white/60 text-xs">Détecter plusieurs espèces simultanément ou rejeter les bruits inconnus.</p>
-                </div>
-              </li>
-              <li class="flex items-start">
-                <span class="text-primary mr-3 text-lg">✓</span>
-                <div>
-                  <strong class="text-white">Fonctionnement 100% Offline</strong>
-                  <p class="text-white/60 text-xs">Exécution de l'inférence directement sur le processeur du smartphone en pleine jungle.</p>
-                </div>
-              </li>
-              <li class="flex items-start">
-                <span class="text-primary mr-3 text-lg">✓</span>
-                <div>
-                  <strong class="text-white">Ergonomie Mobile Premium</strong>
-                  <p class="text-white/60 text-xs">Visualisation du signal, préchauffage rapide, et base d'espèces locale.</p>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <!-- SLIDE 3: DSP & Resampling -->
-      <section class="slide hidden flex-col max-w-5xl w-full">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <div class="bg-darkpanel/40 border border-white/10 rounded-3xl p-6 backdrop-blur-md shadow-2xl order-last md:order-first">
-            <!-- Spectrogram Image Mock -->
-            <div class="bg-black/60 rounded-2xl p-4 border border-primary/20 relative overflow-hidden">
-              <div class="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent pointer-events-none"></div>
-              <div class="h-40 flex items-end space-x-1">
-                <!-- Generating raw mock bars looking like a spectrogram -->
-                <div class="w-3 bg-primary/40 h-8 rounded-t"></div>
-                <div class="w-3 bg-secondary/60 h-24 rounded-t"></div>
-                <div class="w-3 bg-primary/80 h-16 rounded-t"></div>
-                <div class="w-3 bg-primary/30 h-32 rounded-t"></div>
-                <div class="w-3 bg-secondary/80 h-12 rounded-t"></div>
-                <div class="w-3 bg-primary/90 h-28 rounded-t"></div>
-                <div class="w-3 bg-secondary/40 h-6 rounded-t"></div>
-                <div class="w-3 bg-primary/50 h-20 rounded-t"></div>
-                <div class="w-3 bg-secondary/70 h-36 rounded-t"></div>
-                <div class="w-3 bg-primary/80 h-14 rounded-t"></div>
-                <div class="w-3 bg-primary/40 h-24 rounded-t"></div>
-                <div class="w-3 bg-secondary/50 h-10 rounded-t"></div>
-                <div class="w-3 bg-primary/90 h-30 rounded-t"></div>
-                <div class="w-3 bg-secondary/90 h-18 rounded-t"></div>
-              </div>
-              <div class="flex justify-between text-[10px] text-white/40 mt-2 font-mono">
-                <span>0s (Time)</span>
-                <span>Frequences (Mel Scale)</span>
-                <span>3s</span>
-              </div>
-            </div>
-            <div class="mt-4 text-center">
-              <span class="text-xs text-secondary font-mono">Figure 1 : Log-Mel Spectrogramme (Entrée Réseau)</span>
-            </div>
+            <span class="text-[10px] text-white/40 uppercase block">Presenter</span>
+            <span class="font-semibold text-white">Marc</span>
           </div>
           <div>
-            <span class="text-primary font-mono text-sm uppercase tracking-widest block mb-2">// Prétraitement DSP</span>
-            <h2 class="font-outfit font-bold text-4xl mb-6">De l'Audio Brut aux Spectrogrammes Mel</h2>
-            <div class="space-y-4 text-sm text-white/80">
-              <p>
-                Pour qu'un réseau de neurones convolutif (conçu pour l'image) comprenne du son, nous devons convertir l'onde temporelle en une image temps-fréquence.
-              </p>
-              <ul class="space-y-3 text-xs">
-                <li class="flex items-start">
-                  <span class="text-secondary mr-2">•</span>
-                  <span><strong>Rééchantillonnage (FFmpeg)</strong> : Conversion du flux microphone à <strong>16 000 Hz, Mono, PCM 16 bits</strong>. Indispensable pour la cohérence mathématique.</span>
-                </li>
-                <li class="flex items-start">
-                  <span class="text-secondary mr-2">•</span>
-                  <span><strong>Sélection d'Énergie</strong> : Découpe en fenêtres de 3 secondes. Le segment affichant la plus grande énergie brute est extrait pour l'inférence.</span>
-                </li>
-                <li class="flex items-start">
-                  <span class="text-secondary mr-2">•</span>
-                  <span><strong>Spectrogramme Mel</strong> : Transformation de Fourier (STFT) compressée selon l'échelle de Mel, qui mime la sensibilité de l'oreille humaine aux hauteurs de ton.</span>
-                </li>
-              </ul>
-            </div>
+            <span class="text-[10px] text-white/40 uppercase block">Host Institution</span>
+            <span class="font-semibold text-white">Internship in Malaysia</span>
           </div>
         </div>
       </section>
 
-      <!-- SLIDE 4: Architectures -->
-      <section class="slide hidden flex-col max-w-5xl w-full">
-        <div class="text-center mb-8">
-          <span class="text-primary font-mono text-sm uppercase tracking-widest block mb-2">// Deep Learning</span>
-          <h2 class="font-outfit font-bold text-4xl">Deux Modèles de Départ Complémentaires</h2>
-        </div>
+      <!-- SLIDE 2: Context of the Internship -->
+      <section class="slide hidden flex-col w-full text-left">
+        <h2 class="font-outfit font-bold text-3xl text-primary mb-6 flex items-center">
+          <span class="text-white/20 font-mono mr-3">01.</span> Context & Host Organization
+        </h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div class="bg-darkpanel/40 border border-white/10 rounded-3xl p-6 backdrop-blur-md hover:border-primary/30 transition-all duration-300">
-            <h3 class="font-outfit font-bold text-2xl text-primary mb-3">1. MynaNet (Réseau Principal)</h3>
-            <p class="text-white/60 text-xs mb-4">Inspiré de MobileNetV3 Small (Inverted Residuals)</p>
-            <ul class="space-y-2 text-xs text-white/80">
-              <li>• <strong>Canaux de sortie</strong> : 64 Mel &times; 300 trames temporelles.</li>
-              <li>• <strong>Squeeze-and-Excitation</strong> : Recalcule dynamiquement le poids de chaque canal pour focaliser le réseau sur les fréquences du chant.</li>
-              <li>• <strong>Légèreté extrême</strong> : Moins de 3 millions de paramètres.</li>
-              <li>• <strong>Précision Solo</strong> : <strong class="text-primary">80.16%</strong> de validation accuracy.</li>
-            </ul>
-          </div>
-          <div class="bg-darkpanel/40 border border-white/10 rounded-3xl p-6 backdrop-blur-md hover:border-secondary/30 transition-all duration-300">
-            <h3 class="font-outfit font-bold text-2xl text-secondary mb-3">2. Compact CNN (Réseau Complémentaire)</h3>
-            <p class="text-white/60 text-xs mb-4">Réseau Convolutif Standard à 4 Couches</p>
-            <ul class="space-y-2 text-xs text-white/80">
-              <li>• <strong>Canaux de sortie</strong> : 128 Mel &times; 128 trames temporelles.</li>
-              <li>• <strong>Global Average Pooling</strong> : Remplace les couches denses lourdes pour éviter le surapprentissage.</li>
-              <li>• <strong>Simplicité</strong> : Idéal pour capter les motifs grossiers et les chants lents.</li>
-              <li>• <strong>Précision Solo</strong> : <strong class="text-secondary">75.74%</strong> de validation accuracy.</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <!-- SLIDE 5: Softmax vs Sigmoid -->
-      <section class="slide hidden flex-col max-w-5xl w-full">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <div>
-            <span class="text-primary font-mono text-sm uppercase tracking-widest block mb-2">// Choix Architecturaux Majeurs</span>
-            <h2 class="font-outfit font-bold text-4xl mb-6">Pourquoi la Sigmoïde plutôt que le Softmax ?</h2>
-            <div class="space-y-4 text-sm text-white/80">
-              <p>
-                Le standard de l'industrie pour la classification d'images utilise une activation <strong>Softmax</strong> en sortie. Mais pour la bioacoustique de terrain, c'est une faiblesse majeure.
-              </p>
-              <div class="bg-yellow-500/10 border-l-4 border-yellow-500 p-4 rounded-r-lg text-xs my-4">
-                <p class="font-semibold text-yellow-300">La contrainte Softmax :</p>
-                <p class="text-white/70 mt-1">
-                  Softmax force la somme de toutes les probabilités à être égale à 1.0. Face à un bruit inconnu ou du vent, le modèle est obligé d'attribuer une forte confiance à l'une de ses classes connues !
-                </p>
-              </div>
-              <p>
-                <strong>Le choix Sigmoïde + Binary Crossentropy (BCE)</strong> : chaque oiseau est évalué de manière indépendante entre 0 et 1.
-              </p>
-              <ul class="list-disc list-inside text-xs space-y-1 text-primary">
-                <li>Résistance au mimétisme (ex: le Drongo imitant le Tit-Babbler).</li>
-                <li>Possibilité de prédire "Inconnu" si tous les scores sont < 15%.</li>
-                <li>Détection naturelle multi-label.</li>
-              </ul>
-            </div>
-          </div>
-          <div class="bg-darkpanel/40 border border-white/10 rounded-3xl p-8 backdrop-blur-md shadow-2xl flex flex-col justify-center">
-            <h3 class="font-outfit font-semibold text-xl mb-4 text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">Comparaison Mathématique</h3>
-            <div class="space-y-4 font-mono text-xs">
-              <div class="bg-black/40 p-3 rounded-lg">
-                <span class="text-red-400"># Softmax (Exclusif)</span>
-                <p class="text-white/50 text-[10px] mt-1">\[P(y_i) = \frac{e^{z_i}}{\sum e^{z_j}}\]</p>
-                <p class="text-white/70 text-[10px] mt-2">Force une somme de 1. Confiance artificielle.</p>
-              </div>
-              <div class="bg-black/40 p-3 rounded-lg">
-                <span class="text-primary"># Sigmoid (Indépendant)</span>
-                <p class="text-white/50 text-[10px] mt-1">\[P(y_i) = \frac{1}{1 + e^{-z_i}}\]</p>
-                <p class="text-white/70 text-[10px] mt-2">Évalue chaque espèce séparément. Idéal pour le bruit.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- SLIDE 6: Results & Ensemble -->
-      <section class="slide hidden flex-col max-w-5xl w-full">
-        <div class="text-center mb-8">
-          <span class="text-primary font-mono text-sm uppercase tracking-widest block mb-2">// Résultats</span>
-          <h2 class="font-outfit font-bold text-4xl">L'Ensemble Double Sigmoïde : Record de Précision</h2>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <div class="space-y-6">
-            <div class="space-y-2">
-              <div class="flex justify-between text-xs font-semibold">
-                <span>Compact CNN (Solo)</span>
-                <span class="text-secondary">75.74%</span>
-              </div>
-              <div class="h-3 w-full bg-white/10 rounded-full overflow-hidden">
-                <div class="h-full bg-secondary" style="width: 75.74%"></div>
-              </div>
-            </div>
-            <div class="space-y-2">
-              <div class="flex justify-between text-xs font-semibold">
-                <span>MynaNet (Solo)</span>
-                <span class="text-primary">80.16%</span>
-              </div>
-              <div class="h-3 w-full bg-white/10 rounded-full overflow-hidden">
-                <div class="h-full bg-primary" style="width: 80.16%"></div>
-              </div>
-            </div>
-            <div class="space-y-2">
-              <div class="flex justify-between text-xs font-semibold">
-                <span>Ensemble Double Sigmoïde (50/50)</span>
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary font-bold">81.41%</span>
-              </div>
-              <div class="h-4 w-full bg-white/10 rounded-full overflow-hidden shadow-[0_0_10px_rgba(0,230,118,0.2)]">
-                <div class="h-full bg-gradient-to-r from-primary to-secondary" style="width: 81.41%"></div>
-              </div>
-            </div>
-          </div>
-          <div class="bg-darkpanel/40 border border-white/10 rounded-3xl p-8 backdrop-blur-md shadow-2xl">
-            <h3 class="font-outfit font-bold text-xl text-primary mb-4">Pourquoi l'Ensemble surpasse les modèles solos ?</h3>
-            <p class="text-sm text-white/80 mb-4">
-              En moyennant les probabilités sigmoid des deux modèles (ratio 0.5 MynaNet + 0.5 CNN) :
+          <div class="space-y-4 text-sm text-white/80">
+            <p>
+              My S7 **Expérience Professionnelle Internationale (EPI)** took place in **Malaysia**, focusing on mobile application development and edge AI integrations.
             </p>
-            <ul class="space-y-3 text-xs text-white/70">
-              <li class="flex items-start">
-                <span class="text-primary mr-2">•</span>
-                <span><strong>Réduction de la Variance</strong> : Les erreurs individuelles de chaque réseau s'annulent.</span>
-              </li>
-              <li class="flex items-start">
-                <span class="text-primary mr-2">•</span>
-                <span><strong>Complémentarité Spectrale</strong> : MynaNet (64x300) excelle sur la dynamique temporelle, tandis que le CNN (128x128) excelle sur la précision fréquentielle.</span>
-              </li>
+            <div class="bg-black/30 p-4 rounded-xl border border-white/5 space-y-2">
+              <h4 class="font-semibold text-white text-xs uppercase tracking-wider text-secondary">Organisational Scope:</h4>
+              <p class="text-xs text-white/60">
+                Building a modern bioacoustics mobile client to classify local bird species entirely offline to support forest monitoring and citizen science.
+              </p>
+            </div>
+          </div>
+          <div class="bg-white/5 p-6 rounded-2xl border border-white/10 space-y-4">
+            <h3 class="font-outfit font-semibold text-lg text-white">Key Deliverables Specified:</h3>
+            <ul class="space-y-2 text-xs text-white/70">
+              <li class="flex items-center"><span class="text-primary mr-2">✔</span> 100% offline edge AI execution.</li>
+              <li class="flex items-center"><span class="text-primary mr-2">✔</span> Cross-platform code using Flutter.</li>
+              <li class="flex items-center"><span class="text-primary mr-2">✔</span> Local SQLite storage for observation history.</li>
+              <li class="flex items-center"><span class="text-primary mr-2">✔</span> Robustness guards against silence and mic saturation.</li>
             </ul>
           </div>
         </div>
       </section>
 
-      <!-- SLIDE 7: Edge AI & Mobile Deployment -->
-      <section class="slide hidden flex-col max-w-5xl w-full">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <div>
-            <span class="text-primary font-mono text-sm uppercase tracking-widest block mb-2">// Déploiement Mobile</span>
-            <h2 class="font-outfit font-bold text-4xl mb-6">Edge AI & Optimisations Smartphones</h2>
-            <div class="space-y-4 text-sm text-white/80">
-              <p>
-                Faire tourner de gros modèles de Deep Learning sur des puces de téléphones nécessite des techniques d'optimisation spécifiques.
-              </p>
-              <ul class="space-y-3 text-xs">
-                <li class="flex items-start">
-                  <span class="text-secondary mr-2">•</span>
-                  <span><strong>Quantification Float16</strong> : Conversion des poids 32 bits en 16 bits sous TFLite. Divise le poids de l'APK par 2, accélère les calculs et limite la consommation thermique.</span>
-                </li>
-                <li class="flex items-start">
-                  <span class="text-secondary mr-2">•</span>
-                  <span><strong>Inférence de Préchauffage (Warm-up)</strong> : Lancement d'une fausse inférence (`_warmup()`) à l'initialisation de l'application. Évite un lag de 500ms au premier enregistrement réel de l'utilisateur.</span>
-                </li>
-                <li class="flex items-start">
-                  <span class="text-secondary mr-2">•</span>
-                  <span><strong>TTA par Fenêtre Glissante</strong> : Analyse de l'audio par blocs qui se chevauchent de 50%, retenant le score maximal pour une détection robuste.</span>
-                </li>
-              </ul>
+      <!-- SLIDE 3: Technical Architecture -->
+      <section class="slide hidden flex-col w-full text-left">
+        <h2 class="font-outfit font-bold text-3xl text-primary mb-6 flex items-center">
+          <span class="text-white/20 font-mono mr-3">02.</span> Technical System Architecture
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div class="bg-black/40 p-5 rounded-2xl border border-white/5 space-y-4">
+            <h3 class="font-outfit font-semibold text-base text-secondary">Audio Pipeline & Preprocessing</h3>
+            <ul class="space-y-2 text-xs text-white/80">
+              <li><strong class="text-white">Resampling</strong>: Resampled on-device to 16,000 Hz Mono PCM 16-bit.</li>
+              <li><strong class="text-white">Energy Windowing</strong>: Automatic extraction of the most active 3-second segment.</li>
+              <li><strong class="text-white">Mel Spectrogram</strong>: Computed to output visual representations matching human auditory scale.</li>
+            </ul>
+          </div>
+          <div class="bg-black/40 p-5 rounded-2xl border border-white/5 space-y-4">
+            <h3 class="font-outfit font-semibold text-base text-primary">Mobile Client Stack</h3>
+            <ul class="space-y-2 text-xs text-white/80">
+              <li><strong class="text-white">Framework</strong>: Flutter for modern, hardware-accelerated fluid UI.</li>
+              <li><strong class="text-white">ML Runtime</strong>: TensorFlow Lite (TFLite) using C Platform Channels.</li>
+              <li><strong class="text-white">Database</strong>: SQLite via Sqflite for persistent history.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 4: Machine Learning Strategy -->
+      <section class="slide hidden flex-col w-full text-left">
+        <h2 class="font-outfit font-bold text-3xl text-primary mb-6 flex items-center">
+          <span class="text-white/20 font-mono mr-3">03.</span> Edge Deep Learning Models
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div class="space-y-4 text-sm text-white/80">
+            <p>
+              We designed an **Ensemble Model** to combine architectural advantages, improving robustness against environmental noises.
+            </p>
+            <div class="bg-black/40 p-4 rounded-xl border border-white/5 text-xs font-mono">
+              <span class="text-primary">// Validation Accuracies</span>
+              <div class="flex justify-between mt-2"><span>• Compact CNN:</span><span class="text-secondary">75.74%</span></div>
+              <div class="flex justify-between"><span>• MynaNet (Solo):</span><span class="text-primary">80.16%</span></div>
+              <div class="flex justify-between border-t border-white/10 pt-1 mt-1 text-white font-bold"><span>• Double Sigmoid Ensemble:</span><span class="text-primary">81.41%</span></div>
             </div>
           </div>
-          <div class="bg-darkpanel/40 border border-white/10 rounded-3xl p-8 backdrop-blur-md shadow-2xl">
-            <h3 class="font-outfit font-semibold text-xl mb-4 text-secondary">Structure des Dossiers Mobiles</h3>
-            <div class="font-mono text-xs space-y-2 text-white/70">
-              <div class="flex justify-between border-b border-white/10 pb-2">
-                <span>assets/model/*.tflite</span>
-                <span class="text-primary">Modèles Compilés</span>
+          <div class="space-y-3">
+            <div class="bg-white/5 p-4 rounded-xl border border-white/10 text-xs">
+              <strong class="text-white">MynaNet (MobileNetV3 Small)</strong>
+              <p class="text-white/60 mt-1">Lightweight inverted residuals with Squeeze-and-Excitation blocks to focus on specific audio frequency channels.</p>
+            </div>
+            <div class="bg-white/5 p-4 rounded-xl border border-white/10 text-xs">
+              <strong class="text-white">Why Sigmoid + BCE instead of Softmax?</strong>
+              <p class="text-white/60 mt-1">Softmax forces mutual exclusion. Sigmoid handles silence, multi-label classifications, and environmental noise independently.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 5: Edge Optimization & Latency -->
+      <section class="slide hidden flex-col w-full text-left">
+        <h2 class="font-outfit font-bold text-3xl text-primary mb-6 flex items-center">
+          <span class="text-white/20 font-mono mr-3">04.</span> Edge AI Optimizations
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div class="space-y-4 text-sm text-white/80">
+            <p>
+              Running deep neural networks offline on phones requires careful resource management.
+            </p>
+            <ul class="space-y-2 text-xs">
+              <li class="flex items-start"><span class="text-primary mr-2">•</span><span><strong>Float16 Quantization</strong>: Weights quantized from 32-bit to 16-bit, cutting model size in half and accelerating calculations.</span></li>
+              <li class="flex items-start"><span class="text-primary mr-2">•</span><span><strong>Warm-up Inference</strong>: Initiates a dummy classification on startup, removing a 500ms initial lag when the user first records.</span></li>
+            </ul>
+          </div>
+          <div class="bg-black/30 p-5 rounded-2xl border border-white/5 space-y-4">
+            <h3 class="font-outfit font-semibold text-base text-secondary">DSP Guard Protections</h3>
+            <div class="space-y-2 text-xs">
+              <div class="bg-yellow-500/10 p-2.5 rounded border border-yellow-500/20">
+                <strong class="text-yellow-400">Silence Guard</strong>: Blocks TFLite calls if audio RMS is below 0.005.
               </div>
-              <div class="flex justify-between border-b border-white/10 pb-2">
-                <span>lib/core/services/recognition_service.dart</span>
-                <span class="text-secondary">Inférence & warm-up</span>
-              </div>
-              <div class="flex justify-between border-b border-white/10 pb-2">
-                <span>lib/core/services/audio_processing_service.dart</span>
-                <span class="text-secondary">Découpe & Normalisation</span>
-              </div>
-              <div class="flex justify-between pb-2">
-                <span>lib/features/history/history_screen.dart</span>
-                <span class="text-primary">SQLite & Persistance</span>
+              <div class="bg-red-500/10 p-2.5 rounded border border-red-500/20">
+                <strong class="text-red-400">Clipping Guard</strong>: Warns user of microphone clipping saturation.
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- SLIDE 8: DSP Guards & UX -->
-      <section class="slide hidden flex-col max-w-5xl w-full">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <div class="bg-darkpanel/40 border border-white/10 rounded-3xl p-6 backdrop-blur-md shadow-2xl order-last md:order-first">
-            <div class="bg-black/60 rounded-2xl p-6 border border-primary/20 space-y-4">
-              <div class="flex items-center space-x-3 bg-yellow-500/10 p-3 rounded-lg border border-yellow-500/30">
-                <span class="text-yellow-400 text-lg">⚠️</span>
-                <div>
-                  <h4 class="text-xs font-bold text-yellow-300">Silence Guard</h4>
-                  <p class="text-[10px] text-white/60">Audio sous 0.005 RMS rejeté pour économiser les calculs.</p>
-                </div>
-              </div>
-              <div class="flex items-center space-x-3 bg-red-500/10 p-3 rounded-lg border border-red-500/30">
-                <span class="text-red-400 text-lg">💥</span>
-                <div>
-                  <h4 class="text-xs font-bold text-red-300">Clipping Guard</h4>
-                  <p class="text-[10px] text-white/60">Alerte de saturation si > 1% des échantillons touchent 1.0/-1.0.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div>
-            <span class="text-primary font-mono text-sm uppercase tracking-widest block mb-2">// Robustesse Bioacoustique</span>
-            <h2 class="font-outfit font-bold text-4xl mb-6">Les DSP Guards : Sécuriser la Qualité d'Inférence</h2>
-            <div class="space-y-4 text-sm text-white/80">
-              <p>
-                En forêt, l'utilisateur n'est pas ingénieur du son. L'application doit analyser intelligemment la qualité du microphone avant de faire confiance aux prédictions.
-              </p>
-              <ul class="space-y-3 text-xs">
-                <li class="flex items-start">
-                  <span class="text-primary mr-2">1.</span>
-                  <span><strong>Silence Guard</strong> : Si le signal RMS calculé sur le PCM brut est trop faible, l'application bloque l'inférence TFLite inutile et indique "Silence" pour préserver le processeur.</span>
-                </li>
-                <li class="flex items-start">
-                  <span class="text-primary mr-2">2.</span>
-                  <span><strong>Clipping Guard</strong> : Si le micro sature (téléphone trop proche de l'oiseau ou vent violent), l'application prévient l'utilisateur avec un message "Signal saturé" pour tempérer l'estimation.</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- SLIDE 9: Visual aesthetics & Features -->
-      <section class="slide hidden flex-col max-w-5xl w-full">
-        <div class="text-center mb-8">
-          <span class="text-primary font-mono text-sm uppercase tracking-widest block mb-2">// Expérience Utilisateur</span>
-          <h2 class="font-outfit font-bold text-4xl">Une UI Premium & Moderne</h2>
-        </div>
+      <!-- SLIDE 6: UI & App Demonstration -->
+      <section class="slide hidden flex-col w-full text-left">
+        <h2 class="font-outfit font-bold text-3xl text-primary mb-6 flex items-center">
+          <span class="text-white/20 font-mono mr-3">05.</span> UI Design & Demonstration
+        </h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div class="bg-darkpanel/40 border border-white/10 rounded-2xl p-5 text-center">
-            <span class="text-3xl block mb-2">🔊</span>
-            <h3 class="font-outfit font-semibold text-lg text-primary mb-2">Visualiseur Dynamic</h3>
-            <p class="text-white/60 text-xs">Un oscillateur dynamique en Flutter trace une onde colorée néon vert lors de la capture.</p>
+          <div class="bg-white/5 p-4 rounded-xl border border-white/10">
+            <h3 class="font-semibold text-sm text-primary mb-2">Sound Wave Visualizer</h3>
+            <p class="text-xs text-white/70">A custom painter in Flutter displays dynamic sinusoidal waveforms in real-time while capturing.</p>
           </div>
-          <div class="bg-darkpanel/40 border border-white/10 rounded-2xl p-5 text-center">
-            <span class="text-3xl block mb-2">📸</span>
-            <h3 class="font-outfit font-semibold text-lg text-secondary mb-2">Images HD Offline</h3>
-            <p class="text-white/60 text-xs">Photos HD de Wikimedia Commons embarquées localement pour un usage sans aucune connexion.</p>
+          <div class="bg-white/5 p-4 rounded-xl border border-white/10">
+            <h3 class="font-semibold text-sm text-secondary mb-2">Offline Species Database</h3>
+            <p class="text-xs text-white/70">Local profile data and Wikimedia Commons images stored directly inside the APK for offline reading.</p>
           </div>
-          <div class="bg-darkpanel/40 border border-white/10 rounded-2xl p-5 text-center">
-            <span class="text-3xl block mb-2">🗣️</span>
-            <h3 class="font-outfit font-semibold text-lg text-primary mb-2">Tri-Langue</h3>
-            <p class="text-white/60 text-xs">Traduction à la volée en Français, Anglais, et Malais pour satisfaire le public local.</p>
+          <div class="bg-white/5 p-4 rounded-xl border border-white/10">
+            <h3 class="font-semibold text-sm text-primary mb-2">Triple Localization</h3>
+            <p class="text-xs text-white/70">Seamless dynamic switching between English, French, and local Malay (Bahasa Melayu).</p>
           </div>
         </div>
       </section>
 
-      <!-- SLIDE 10: Conclusion -->
-      <section class="slide hidden flex-col items-center text-center max-w-3xl">
-        <span class="text-primary font-mono text-sm uppercase tracking-widest block mb-2">// Conclusion</span>
-        <h2 class="font-outfit font-black text-5xl mb-6">ZamZam est prêt pour la jungle</h2>
-        <div class="h-1 w-24 bg-gradient-to-r from-primary to-secondary rounded-full mb-8"></div>
-        <div class="space-y-4 text-white/80 text-sm max-w-xl mb-12">
-          <p>
-            Nous avons conçu une application bioacoustique complète : robuste face aux bruits parasites grâce à l'architecture Sigmoïde, optimisée pour le mobile, et habillée d'une UI interactive moderne.
-          </p>
+      <!-- SLIDE 7: Competencies Acquired (ESEO Grid) -->
+      <section class="slide hidden flex-col w-full text-left">
+        <h2 class="font-outfit font-bold text-3xl text-primary mb-6 flex items-center">
+          <span class="text-white/20 font-mono mr-3">06.</span> Competencies Acquired (ESEO Grid)
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm">
+          <div class="space-y-4">
+            <div class="flex items-start">
+              <div class="bg-primary/20 p-2 rounded-lg text-primary mr-3 font-bold text-xs">C1</div>
+              <div>
+                <strong class="text-white block">Analyze & Diagnose</strong>
+                <span class="text-xs text-white/60">Designed a complete DSP pipeline to extract signal features from noisy audio.</span>
+              </div>
+            </div>
+            <div class="flex items-start">
+              <div class="bg-primary/20 p-2 rounded-lg text-primary mr-3 font-bold text-xs">C2</div>
+              <div>
+                <strong class="text-white block">Design System Architectures</strong>
+                <span class="text-xs text-white/60">Configured Gradle, Proguard, and Flutter Platform channels for native edge AI execution.</span>
+              </div>
+            </div>
+          </div>
+          <div class="space-y-4">
+            <div class="flex items-start">
+              <div class="bg-secondary/20 p-2 rounded-lg text-secondary mr-3 font-bold text-xs">C3</div>
+              <div>
+                <strong class="text-white block">Realize Prototypes</strong>
+                <span class="text-xs text-white/60">Built a production-grade Flutter application and Python MLOps datasets.</span>
+              </div>
+            </div>
+            <div class="flex items-start">
+              <div class="bg-secondary/20 p-2 rounded-lg text-secondary mr-3 font-bold text-xs">C4</div>
+              <div>
+                <strong class="text-white block">Manage Constraints</strong>
+                <span class="text-xs text-white/60">Optimized Android Release builds using R8 code shrinking and ABI splitting.</span>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="bg-primary/10 border border-primary/20 rounded-2xl px-6 py-3">
-          <span class="text-primary font-mono text-sm font-bold">Fin de la présentation — Place aux questions</span>
+      </section>
+
+      <!-- SLIDE 8: Cultural Experience in Malaysia -->
+      <section class="slide hidden flex-col w-full text-left">
+        <h2 class="font-outfit font-bold text-3xl text-primary mb-6 flex items-center">
+          <span class="text-white/20 font-mono mr-3">07.</span> Cultural Experience & Integration
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm">
+          <div class="space-y-4">
+            <h3 class="font-semibold text-secondary">Adaptation to Malaysian Work Culture</h3>
+            <ul class="space-y-2 text-xs text-white/80">
+              <li>• **Multicultural Environment**: Collaborating with Malay, Chinese, and Indian colleagues, learning diverse communication styles.</li>
+              <li>• **Harmonious Work Style**: Emphasis on consensus, respect, and politeness in day-to-day operations.</li>
+              <li>• **Agility & Adaptation**: Working with local teams and learning to coordinate project milestones across time zones.</li>
+            </ul>
+          </div>
+          <div class="bg-white/5 p-5 rounded-2xl border border-white/10 space-y-4 text-xs text-white/70">
+            <h3 class="font-semibold text-white">Observations on Local Lifestyle</h3>
+            <p>
+              Adapting to local climate, tropical environments, and exploring Malaysia's rich culinary traditions and biodiversity.
+            </p>
+            <p>
+              Developing the bird application directly motivated by the rich tropical fauna (e.g. Hornbills, Barbets) found locally.
+            </p>
+          </div>
         </div>
+      </section>
+
+      <!-- SLIDE 9: Personal Assessment -->
+      <section class="slide hidden flex-col w-full text-left">
+        <h2 class="font-outfit font-bold text-3xl text-primary mb-6 flex items-center">
+          <span class="text-white/20 font-mono mr-3">08.</span> Personal Assessment & Openings
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm">
+          <div class="space-y-3">
+            <h3 class="font-semibold text-secondary">Key Lessons Learned</h3>
+            <p class="text-xs text-white/80">
+              * **Industrial Autonomy**: Building a production-grade app from raw dataset downloads to optimized APK compilation.
+            </p>
+            <p class="text-xs text-white/80">
+              * **Pragmatic Optimization**: Choosing simpler CNN architectures or post-training quantization to preserve battery and RAM.
+            </p>
+          </div>
+          <div class="bg-black/30 p-5 rounded-2xl border border-white/5 space-y-3 text-xs text-white/70">
+            <h3 class="font-semibold text-white">Future Openings</h3>
+            <p>
+              * **Knowledge Distillation**: Training a single lightweight model to inherit the accuracy of 4+ heavy architectures.
+            </p>
+            <p>
+              * **Server-Side Scaling**: Implementing a hybrid model that queries cloud networks for rare species when connectivity is available.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 10: Ending Slide -->
+      <section class="slide hidden flex-col items-center text-center w-full">
+        <h2 class="font-outfit font-black text-4xl md:text-5xl text-primary mb-4">
+          Thank you for your attention
+        </h2>
+        <p class="font-outfit font-semibold text-xl text-white/60 mb-8">
+          Terima Kasih • Merci
+        </p>
+        <div class="h-1 w-20 bg-gradient-to-r from-primary to-secondary rounded-full mb-8"></div>
+        <span class="text-xs text-white/40 tracking-widest font-mono">Q&A SESSION — MARC S7 EPI DEFENSE</span>
       </section>
 
     </main>
 
-    <!-- Footer / Navigation (Constant) -->
-    <footer class="flex justify-between items-center z-10 border-t border-white/5 pt-4">
-      <div class="text-xs text-white/40">
-        Utilisez les flèches <span class="bg-white/10 px-1.5 py-0.5 rounded font-mono text-[10px] text-white/80 font-bold">←</span> et <span class="bg-white/10 px-1.5 py-0.5 rounded font-mono text-[10px] text-white/80 font-bold">→</span> ou <span class="bg-white/10 px-1.5 py-0.5 rounded font-mono text-[10px] text-white/80 font-bold">Espace</span>
+    <!-- Slide Footer -->
+    <footer class="flex justify-between items-center border-t border-white/5 pt-4 text-xs text-white/40">
+      <div>
+        Press <span class="bg-white/10 px-1 rounded text-white/80 font-mono">←</span> and <span class="bg-white/10 px-1 rounded text-white/80 font-mono">→</span> or <span class="bg-white/10 px-1 rounded text-white/80 font-mono">Space</span> to navigate
       </div>
-      <!-- Slide Indicator -->
-      <div id="slide-indicator" class="text-sm font-semibold font-mono text-primary bg-primary/10 px-3 py-1 rounded-full border border-primary/20">
+      <div id="slide-num" class="bg-primary/10 border border-primary/20 text-primary px-3 py-0.5 rounded-full font-mono font-bold">
         1 / 10
       </div>
-      <div class="text-xs text-white/40">
-        © 2026 ZamZam App
+      <div>
+        ESEO Apprenticeship Program (2025-2026)
       </div>
     </footer>
 
-    <!-- Glassmorphic Background Shapes -->
-    <div class="absolute bottom-1/4 left-10 w-96 h-96 bg-primary/5 rounded-full filter blur-3xl -z-10"></div>
-    <div class="absolute top-1/3 right-10 w-[500px] h-[500px] bg-secondary/5 rounded-full filter blur-3xl -z-10"></div>
   </div>
 
-  <!-- LaTeX Render Support via KaTeX -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="renderMath()"></script>
-
   <script>
-    // Math rendering configuration
-    function renderMath() {
-      renderMathInElement(document.body, {
-        delimiters: [
-          {left: '$$', right: '$$', display: true},
-          {left: '$', right: '$', display: false},
-          {left: '\\(', right: '\\)', display: false},
-          {left: '\\[', right: '\\]', display: true}
-        ],
-        throwOnError : false
-      });
-    }
-
-    // Presentation logic
     const slides = document.querySelectorAll('.slide');
     let currentSlide = 0;
-    const indicator = document.getElementById('slide-indicator');
+    const numIndicator = document.getElementById('slide-num');
 
     function showSlide(index) {
       if (index < 0 || index >= slides.length) return;
@@ -523,10 +359,9 @@
       slides[currentSlide].classList.remove('hidden');
       slides[currentSlide].classList.add('slide-active');
       
-      indicator.innerText = `${currentSlide + 1} / ${slides.length}`;
+      numIndicator.innerText = `${currentSlide + 1} / ${slides.length}`;
     }
 
-    // Keyboard controls
     document.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowRight' || e.key === ' ') {
         e.preventDefault();
