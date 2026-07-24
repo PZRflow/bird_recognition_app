@@ -61,3 +61,8 @@ flutter/
 # Build artifacts
 android/build/
 .vscode/
+
+# Academic & Presentation docs
+soutenance_zamzam.html
+Cahier_des_charges*.pdf
+
