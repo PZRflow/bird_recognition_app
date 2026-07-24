@@ -61,11 +61,20 @@ class MelExtractor {
       final center = binPoints[m + 1];
       final right = binPoints[m + 2];
       
-      for (int k = left; k < center; k++) {
-        melBank[m][k] = (k - left) / (center - left);
+      // Slaney area normalization (matches Librosa default norm='slaney')
+      final double enorm = (hzPoints[m + 2] > hzPoints[m]) 
+          ? 2.0 / (hzPoints[m + 2] - hzPoints[m]) 
+          : 1.0;
+      
+      if (center > left) {
+        for (int k = left; k < center; k++) {
+          melBank[m][k] = ((k - left) / (center - left)) * enorm;
+        }
       }
-      for (int k = center; k < right; k++) {
-        melBank[m][k] = (right - k) / (right - center);
+      if (right > center) {
+        for (int k = center; k < right; k++) {
+          melBank[m][k] = ((right - k) / (right - center)) * enorm;
+        }
       }
     }
     return melBank;

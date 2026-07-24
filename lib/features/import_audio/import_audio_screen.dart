@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:file_selector/file_selector.dart';
+import 'package:path_provider/path_provider.dart';
 import '../prediction/prediction_screen.dart';
 import 'package:path/path.dart' as p;
 
@@ -20,8 +22,14 @@ class _ImportAudioScreenState extends State<ImportAudioScreen> {
     );
     final XFile? file = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
     if (file != null) {
+      final bytes = await file.readAsBytes();
+      final tempDir = await getTemporaryDirectory();
+      final sanitizedName = p.basename(file.path).replaceAll(' ', '_');
+      final localFile = File('${tempDir.path}/imported_${DateTime.now().millisecondsSinceEpoch}_$sanitizedName');
+      await localFile.writeAsBytes(bytes);
+
       setState(() {
-        _filePath = file.path;
+        _filePath = localFile.path;
       });
     }
   }

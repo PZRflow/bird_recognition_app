@@ -89,6 +89,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get languageSection => 'Interface Language';
 
   @override
+  String get aiEngineSection => 'AI Architecture';
+
+  @override
   String get modelInfoSection => 'Model Information';
 
   @override

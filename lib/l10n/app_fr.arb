@@ -25,6 +25,7 @@
   "confidenceLabel": "Confiance",
   "settingsTitle": "Paramètres",
   "languageSection": "Langue de l'interface",
+  "aiEngineSection": "Architecture de l'IA",
   "modelInfoSection": "Informations sur le modèle",
   "modelType": "Type de modèle",
   "modelFormat": "Format",

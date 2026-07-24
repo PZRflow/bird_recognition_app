@@ -7,7 +7,7 @@ import 'audio_processing_service.dart';
 import 'mel_extractor.dart';
 
 class RecognitionService {
-  static String activeModel = 'compact_cnn'; // 'compact_cnn', 'mynanet' or 'ensemble'
+  static String activeModel = 'ensemble'; // 'compact_cnn', 'mynanet' or 'ensemble'
   Interpreter? _interpreterCompact;
   Interpreter? _interpreterMyna;
   List<String>? _labels;
@@ -22,14 +22,14 @@ class RecognitionService {
       final needMyna = activeModel == 'mynanet' || activeModel == 'ensemble';
 
       if (needCompact && _interpreterCompact == null) {
-        _interpreterCompact = await Interpreter.fromAsset('assets/model/bird_classifier.tflite');
+        _interpreterCompact = await Interpreter.fromAsset('assets/model/bird_classifier_v2.tflite');
       } else if (!needCompact && _interpreterCompact != null) {
         _interpreterCompact!.close();
         _interpreterCompact = null;
       }
 
       if (needMyna && _interpreterMyna == null) {
-        _interpreterMyna = await Interpreter.fromAsset('assets/model/mynanet_classifier.tflite');
+        _interpreterMyna = await Interpreter.fromAsset('assets/model/mynanet_classifier_v2.tflite');
       } else if (!needMyna && _interpreterMyna != null) {
         _interpreterMyna!.close();
         _interpreterMyna = null;
@@ -131,11 +131,10 @@ class RecognitionService {
 
     // Step 1: Load raw audio as Float32 (mono, 16kHz)
     final Float32List rawAudio = await AudioProcessingService.getAudioFloat32(path);
-    // Step 2: Slice audio into overlapping 3-second segments (48,000 samples at 16kHz)
     const int segmentSize = 48000;
-    const int stepSize = 16000; // 1-second step (50% overlap)
+    const int stepSize = 8000; // 0.5s step scan matching Python
     final List<Float32List> segments = [];
-    final List<Float32List> rawSegments = []; // keep raw unnormalized for clipping check
+    final List<Float32List> rawSegments = [];
 
     if (rawAudio.length <= segmentSize) {
       final padded = Float32List(segmentSize);
@@ -143,13 +142,44 @@ class RecognitionService {
       segments.add(padded);
       rawSegments.add(padded);
     } else {
-      // Limit to at most 10 segments to prevent excessive inference time
-      int count = 0;
-      for (int i = 0; i <= rawAudio.length - segmentSize && count < 10; i += stepSize) {
-        final segment = Float32List.fromList(rawAudio.sublist(i, i + segmentSize));
-        segments.add(segment);
-        rawSegments.add(Float32List.fromList(rawAudio.sublist(i, i + segmentSize)));
-        count++;
+      // Energy scan matching Python train_v2 pipeline (Top 5 non-overlapping active chunks)
+      final List<Map<String, dynamic>> chunkCandidates = [];
+      for (int i = 0; i <= rawAudio.length - segmentSize; i += stepSize) {
+        double energy = 0.0;
+        for (int j = i; j < i + segmentSize; j++) {
+          energy += rawAudio[j] * rawAudio[j];
+        }
+        chunkCandidates.add({'energy': energy, 'idx': i});
+      }
+      chunkCandidates.sort((a, b) => (b['energy'] as double).compareTo(a['energy'] as double));
+      
+      if (chunkCandidates.isNotEmpty) {
+        final double maxEnergy = chunkCandidates[0]['energy'];
+        final double threshold = maxEnergy * 0.1;
+        final List<int> selectedIndices = [];
+        
+        for (final cand in chunkCandidates) {
+          if (selectedIndices.length >= 5) break;
+          if ((cand['energy'] as double) < threshold) continue;
+          
+          final int idx = cand['idx'];
+          bool overlap = false;
+          for (final sel in selectedIndices) {
+            if ((idx - sel).abs() < segmentSize) {
+              overlap = true;
+              break;
+            }
+          }
+          if (!overlap) {
+            selectedIndices.add(idx);
+          }
+        }
+        
+        for (final idx in selectedIndices) {
+          final seg = Float32List.fromList(rawAudio.sublist(idx, idx + segmentSize));
+          segments.add(seg);
+          rawSegments.add(Float32List.fromList(rawAudio.sublist(idx, idx + segmentSize)));
+        }
       }
     }
 
@@ -178,6 +208,13 @@ class RecognitionService {
         final absVal = chunk[i].abs();
         if (absVal > maxAmp) maxAmp = absVal;
       }
+      
+      // Noise Floor Guard: If peak amplitude is under 0.1% (0.001),
+      // it is silence. Do not process empty silence.
+      if (maxAmp < 0.001) {
+        continue;
+      }
+
       if (maxAmp > 0.0) {
         for (int i = 0; i < chunk.length; i++) {
           chunk[i] /= (maxAmp + 1e-7);
@@ -236,9 +273,9 @@ class RecognitionService {
           var outputCompact = List.generate(1, (i) => List.filled(_labels!.length, 0.0));
           _interpreterCompact!.run(tensorCompact, outputCompact);
 
-          // 3. Average them
+          // 3. Average them (Optimal v2 configuration: 0.4 MynaNet + 0.6 Compact CNN)
           segmentProbs = List.generate(_labels!.length, (idx) {
-            return 0.5 * outputMyna[0][idx] + 0.5 * outputCompact[0][idx];
+            return 0.4 * outputMyna[0][idx] + 0.6 * outputCompact[0][idx];
           });
         } else {
           // Standard run
@@ -327,13 +364,18 @@ class RecognitionService {
     
     results.sort((a, b) => b['score'].compareTo(a['score']));
     
-    // Confidence threshold
-    if (results[0]['score'] < 0.15) {
-      return [const BirdPrediction(
+    // Strict Confidence & Out-of-Distribution Rejection Threshold:
+    // Require at least 60% (0.60) score to confirm a valid bird call.
+    // Human speech, music, or non-bird noises typically yield weak scores (30%-50%) and will be cleanly rejected.
+    final double topScore = results[0]['score'];
+    final double secondScore = results.length > 1 ? results[1]['score'] : 0.0;
+    
+    if (topScore < 0.60 || (topScore - secondScore < 0.10 && topScore < 0.70)) {
+      return [BirdPrediction(
         commonName: 'Unknown species',
         scientificName: 'Unidentified',
-        score: 1.0,
-        description: 'The song does not match any known species with certainty.',
+        score: topScore,
+        description: 'The audio (speech or ambient noise) does not match any of the 20 known bird species with high confidence.',
         imageUrl: 'https://images.unsplash.com/photo-1555169062-0133c8dc7c76?w=800',
       ),];
     }

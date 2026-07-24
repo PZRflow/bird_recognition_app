@@ -1,0 +1,23 @@
+{
+    "model_file": "bird_classifier_v2.tflite",
+    "input_shape": [
+        1,
+        92,
+        128,
+        1
+    ],
+    "output_shape": [
+        1,
+        20
+    ],
+    "sample_rate_hz": 16000,
+    "clip_length_s": 3.0,
+    "n_mels": 128,
+    "n_fft": 1024,
+    "hop_length": 512,
+    "fmin_hz": 300,
+    "fmax_hz": 8000,
+    "input_dtype": "float32",
+    "normalisation": "none",
+    "labels_file": "labels.txt"
+}

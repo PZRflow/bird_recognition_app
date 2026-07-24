@@ -89,6 +89,9 @@ class AppLocalizationsMs extends AppLocalizations {
   String get languageSection => 'Bahasa Antara Muka';
 
   @override
+  String get aiEngineSection => 'Seni Bina AI';
+
+  @override
   String get modelInfoSection => 'Maklumat Model';
 
   @override

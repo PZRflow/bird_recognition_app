@@ -45,13 +45,13 @@ Le projet contient un pipeline complet d'apprentissage automatique dans le dossi
    source .venv/bin/activate  # Sur Windows: .venv\Scripts\activate
    pip install -r requirements.txt
    ```
-2. **Entraîner les modèles** :
-   * Pour le modèle principal MynaNet : `python train_mynanet.py`
-   * Pour le modèle complémentaire Compact CNN : `python train_local.py`
+2. **Entraîner les modèles (Version v2 Ensemble)** :
+   * Pour le modèle principal MynaNet v2 : `python train_mynanet_v2.py`
+   * Pour le modèle complémentaire Compact CNN v2 : `python train_local_v2.py`
 3. **Exporter au format TFLite pour Flutter** :
-   * `python export_mynanet_to_flutter.py`
-   * `python export_to_flutter.py`
-   * Les fichiers `.tflite` et métadonnées générés seront automatiquement copiés dans le dossier `assets/model/` de l'application.
+   * `python export_mynanet_to_flutter_v2.py`
+   * `python export_to_flutter_v2.py`
+   * Les fichiers `bird_classifier_v2.tflite` et `mynanet_classifier_v2.tflite` générés seront automatiquement copiés dans le dossier `assets/model/` de l'application.
 
 ---
 

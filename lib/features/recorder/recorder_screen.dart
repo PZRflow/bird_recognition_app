@@ -20,7 +20,7 @@ class _RecorderScreenState extends State<RecorderScreen> {
   Future<void> _startRecording() async {
     if (await _audioRecorder.hasPermission()) {
       final dir = await getApplicationDocumentsDirectory();
-      final path = '${dir.path}/recording.m4a';
+      final path = '${dir.path}/recording_${DateTime.now().millisecondsSinceEpoch}.m4a';
       await _audioRecorder.start(const RecordConfig(), path: path);
       setState(() {
         _isRecording = true;

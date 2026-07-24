@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math' as math;
 import 'dart:typed_data';
 import 'package:ffmpeg_kit_flutter_new/ffmpeg_kit.dart';
 import 'package:path_provider/path_provider.dart';
@@ -34,19 +35,37 @@ class AudioProcessingService {
       // Clean up
       await wavFile.delete();
       
-      // Skip the WAV header (44 bytes) to extract only 16-bit PCM data
-      final int16List = bytes.buffer.asInt16List(44);
-      final float32List = Float32List(int16List.length);
+      // Skip the WAV header (44 bytes) safely to extract 16-bit PCM data
+      final headerOffset = bytes.length >= 44 ? 44 : 0;
+      final byteData = ByteData.sublistView(bytes, headerOffset);
+      final int numSamples = byteData.lengthInBytes ~/ 2;
+      final float32List = Float32List(numSamples);
       
-      // Normalize between -1.0 and 1.0
-      for (int i = 0; i < int16List.length; i++) {
-        float32List[i] = int16List[i] / 32768.0;
+      // Normalize between -1.0 and 1.0 (Little Endian PCM)
+      for (int i = 0; i < numSamples; i++) {
+        final sample = byteData.getInt16(i * 2, Endian.little);
+        float32List[i] = sample / 32768.0;
       }
       
-      return float32List;
+      // Apply DSP Bandpass Filter (300 Hz - 5000 Hz) to match Python training
+      return applyBandpassFilter(float32List);
     } else {
       throw Exception('Error during FFmpeg conversion');
     }
+  }
+
+  /// Applies a 2nd-order Butterworth Bandpass Filter (300 Hz - 8000 Hz) at 16 kHz.
+  /// Eliminates wind & low-frequency rumble < 300 Hz while preserving full 8 kHz bioacoustic spectrum.
+  static Float32List applyBandpassFilter(Float32List input, {double fLow = 300.0, double fHigh = 8000.0, double fs = 16000.0}) {
+    final hp = _BiquadFilter()..setHighPass(fLow, fs, 0.7071);
+    final lp = _BiquadFilter()..setLowPass(fHigh, fs, 0.7071);
+    final output = Float32List(input.length);
+    for (int i = 0; i < input.length; i++) {
+      double s = hp.process(input[i].toDouble());
+      s = lp.process(s);
+      output[i] = s;
+    }
+    return output;
   }
 
   /// Select the 3-second chunk with the highest energy from the audio,
@@ -101,5 +120,45 @@ class AudioProcessingService {
     }
 
     return chunk;
+  }
+}
+
+class _BiquadFilter {
+  double b0 = 0, b1 = 0, b2 = 0, a1 = 0, a2 = 0;
+  double x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+
+  void setHighPass(double fc, double fs, double q) {
+    double w0 = 2 * math.pi * fc / fs;
+    double cosW0 = math.cos(w0);
+    double alpha = math.sin(w0) / (2 * q);
+
+    double a0 = 1 + alpha;
+    b0 = ((1 + cosW0) / 2) / a0;
+    b1 = (-(1 + cosW0)) / a0;
+    b2 = ((1 + cosW0) / 2) / a0;
+    a1 = (-2 * cosW0) / a0;
+    a2 = (1 - alpha) / a0;
+  }
+
+  void setLowPass(double fc, double fs, double q) {
+    double w0 = 2 * math.pi * fc / fs;
+    double cosW0 = math.cos(w0);
+    double alpha = math.sin(w0) / (2 * q);
+
+    double a0 = 1 + alpha;
+    b0 = ((1 - cosW0) / 2) / a0;
+    b1 = (1 - cosW0) / a0;
+    b2 = ((1 - cosW0) / 2) / a0;
+    a1 = (-2 * cosW0) / a0;
+    a2 = (1 - alpha) / a0;
+  }
+
+  double process(double x) {
+    double y = b0 * x + b1 * x1 + b2 * x2 - a1 * y1 - a2 * y2;
+    x2 = x1;
+    x1 = x;
+    y2 = y1;
+    y1 = y;
+    return y;
   }
 }

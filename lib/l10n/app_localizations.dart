@@ -250,6 +250,12 @@ abstract class AppLocalizations {
   /// **'Interface Language'**
   String get languageSection;
 
+  /// Header for AI model section.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Architecture'**
+  String get aiEngineSection;
+
   /// Header for model info section.
   ///
   /// In en, this message translates to:

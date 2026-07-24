@@ -91,6 +91,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get languageSection => 'Langue de l\'interface';
 
   @override
+  String get aiEngineSection => 'Architecture de l\'IA';
+
+  @override
   String get modelInfoSection => 'Informations sur le modèle';
 
   @override
