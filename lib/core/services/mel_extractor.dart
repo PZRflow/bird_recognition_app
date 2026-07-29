@@ -114,14 +114,62 @@ class MelExtractor {
       }
     }
 
-    // Convert to log dB with ABSOLUTE reference (matches Python: 10 * log10(mel + 1e-10))
-    // Then TRANSPOSE to [time][mel] to match training pipeline (logmel.T in Python)
-    final logmelTransposed = List<List<double>>.generate(nFrames, (f) {
+    // 1. Spectral Noise Equalization (Background Noise Subtraction)
+    // Compute median energy per mel channel across frames
+    final noiseFloor = Float64List(nMels);
+    for (int m = 0; m < nMels; m++) {
+      final channelEnergies = List<double>.from(mel[m]);
+      channelEnergies.sort();
+      final double medianVal = channelEnergies[nFrames ~/ 2];
+      noiseFloor[m] = medianVal;
+    }
+
+    final melClean = List<Float64List>.generate(nMels, (_) => Float64List(nFrames));
+    for (int m = 0; m < nMels; m++) {
+      final double sub = 0.8 * noiseFloor[m];
+      for (int f = 0; f < nFrames; f++) {
+        final double val = mel[m][f] - sub;
+        melClean[m][f] = val > 1e-10 ? val : 1e-10;
+      }
+    }
+
+    // 2. Per-Channel Energy Normalization (PCEN)
+    // Formula matches librosa.pcen(mel_clean, sr=16000, time_constant=0.4, gain=0.8, bias=10.0, power=0.25, eps=1e-6)
+    const double timeConstant = 0.4;
+    const double gain = 0.8;
+    const double bias = 10.0;
+    const double power = 0.25;
+    const double eps = 1e-6;
+
+    final double tFrames = timeConstant * sampleRate / hopLength;
+    final double b = (math.sqrt(1.0 + 4.0 * tFrames * tFrames) - 1.0) / (2.0 * tFrames * tFrames);
+    final double biasPow = math.pow(bias, power).toDouble();
+
+    final pcen = List<Float64List>.generate(nMels, (_) => Float64List(nFrames));
+
+    for (int m = 0; m < nMels; m++) {
+      double smooth = melClean[m][0];
+      for (int f = 0; f < nFrames; f++) {
+        final double x = melClean[m][f];
+        if (f == 0) {
+          smooth = x;
+        } else {
+          smooth = b * x + (1.0 - b) * smooth;
+        }
+
+        final double smoothVal = math.exp(-gain * (math.log(eps) + math.log(1.0 + smooth / eps)));
+        final double out = biasPow * (math.exp(power * math.log(1.0 + x * smoothVal / bias)) - 1.0);
+        pcen[m][f] = out;
+      }
+    }
+
+    // Transpose to [time][mel] to match model input shape [1, nFrames, nMels, 1] or [1, nMels, nFrames, 1]
+    final pcenTransposed = List<List<double>>.generate(nFrames, (f) {
       return List<double>.generate(nMels, (m) {
-        return 10.0 * math.log(mel[m][f] + 1e-10) / math.ln10;
+        return pcen[m][f];
       });
     });
-    
-    return logmelTransposed;
+
+    return pcenTransposed;
   }
 }

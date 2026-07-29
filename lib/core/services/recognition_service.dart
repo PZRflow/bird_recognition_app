@@ -22,14 +22,14 @@ class RecognitionService {
       final needMyna = activeModel == 'mynanet' || activeModel == 'ensemble';
 
       if (needCompact && _interpreterCompact == null) {
-        _interpreterCompact = await Interpreter.fromAsset('assets/model/bird_classifier_v2.tflite');
+        _interpreterCompact = await Interpreter.fromAsset('assets/model/bird_classifier_v3.tflite');
       } else if (!needCompact && _interpreterCompact != null) {
         _interpreterCompact!.close();
         _interpreterCompact = null;
       }
 
       if (needMyna && _interpreterMyna == null) {
-        _interpreterMyna = await Interpreter.fromAsset('assets/model/mynanet_classifier_v2.tflite');
+        _interpreterMyna = await Interpreter.fromAsset('assets/model/mynanet_classifier_v3.tflite');
       } else if (!needMyna && _interpreterMyna != null) {
         _interpreterMyna!.close();
         _interpreterMyna = null;
@@ -234,7 +234,7 @@ class RecognitionService {
       List<double> segmentProbs;
       try {
         if (activeModel == 'ensemble') {
-          // 1. Run MynaNet
+          // 1. Run MynaNet PCEN
           final melExtractorMyna = MelExtractor(hopLength: 160, nMels: 64, winLength: 400);
           final melMyna = melExtractorMyna.logMel(chunk);
           final tensorMyna = List.generate(
@@ -242,21 +242,17 @@ class RecognitionService {
             (_) => List.generate(
               64,
               (m) => List.generate(300, (t) {
-                double val = -100.0;
                 if (t < melMyna.length && m < melMyna[t].length) {
-                  val = melMyna[t][m];
+                  return melMyna[t][m];
                 }
-                double normVal = (val + 100.0) / 100.0;
-                if (normVal < 0.0) normVal = 0.0;
-                if (normVal > 1.0) normVal = 1.0;
-                return normVal;
+                return 0.0;
               }).map((v) => [v]).toList(),
             ),
           );
           var outputMyna = List.generate(1, (i) => List.filled(_labels!.length, 0.0));
           _interpreterMyna!.run(tensorMyna, outputMyna);
 
-          // 2. Run Compact CNN
+          // 2. Run Compact CNN PCEN
           final melExtractorCompact = MelExtractor(hopLength: 512, nMels: 128, winLength: 1024);
           final melCompact = melExtractorCompact.logMel(chunk);
           final tensorCompact = List.generate(
@@ -264,16 +260,17 @@ class RecognitionService {
             (_) => List.generate(
               128,
               (t) => List.generate(128, (m) {
-                if (t >= melCompact.length) return -100.0;
-                if (m >= melCompact[t].length) return -100.0;
-                return melCompact[t][m];
+                if (t < melCompact.length && m < melCompact[t].length) {
+                  return melCompact[t][m];
+                }
+                return 0.0;
               }).map((v) => [v]).toList(),
             ),
           );
           var outputCompact = List.generate(1, (i) => List.filled(_labels!.length, 0.0));
           _interpreterCompact!.run(tensorCompact, outputCompact);
 
-          // 3. Average them (Optimal v2 configuration: 0.4 MynaNet + 0.6 Compact CNN)
+          // 3. Average them (Optimal configuration: 0.4 MynaNet PCEN + 0.6 Compact CNN PCEN)
           segmentProbs = List.generate(_labels!.length, (idx) {
             return 0.4 * outputMyna[0][idx] + 0.6 * outputCompact[0][idx];
           });
@@ -293,14 +290,10 @@ class RecognitionService {
               (_) => List.generate(
                 64,
                 (m) => List.generate(300, (t) {
-                  double val = -100.0;
                   if (t < mel.length && m < mel[t].length) {
-                    val = mel[t][m];
+                    return mel[t][m];
                   }
-                  double normVal = (val + 100.0) / 100.0;
-                  if (normVal < 0.0) normVal = 0.0;
-                  if (normVal > 1.0) normVal = 1.0;
-                  return normVal;
+                  return 0.0;
                 }).map((v) => [v]).toList(),
               ),
             );
@@ -310,9 +303,10 @@ class RecognitionService {
               (_) => List.generate(
                 128,
                 (t) => List.generate(128, (m) {
-                  if (t >= mel.length) return -100.0;
-                  if (m >= mel[t].length) return -100.0;
-                  return mel[t][m];
+                  if (t < mel.length && m < mel[t].length) {
+                    return mel[t][m];
+                  }
+                  return 0.0;
                 }).map((v) => [v]).toList(),
               ),
             );

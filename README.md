@@ -45,20 +45,19 @@ Le projet contient un pipeline complet d'apprentissage automatique dans le dossi
    source .venv/bin/activate  # Sur Windows: .venv\Scripts\activate
    pip install -r requirements.txt
    ```
-2. **Entraîner les modèles (Version v2 Ensemble)** :
-   * Pour le modèle principal MynaNet v2 : `python train_mynanet_v2.py`
-   * Pour le modèle complémentaire Compact CNN v2 : `python train_local_v2.py`
+2. **Entraîner les modèles (Version v3 PCEN Ensemble - Record 87.41%)** :
+   * Pour le modèle principal MynaNet PCEN : `python train_mynanet_pcen.py`
+   * Pour le modèle complémentaire Compact CNN PCEN : `python train_compact_pcen.py`
 3. **Exporter au format TFLite pour Flutter** :
-   * `python export_mynanet_to_flutter_v2.py`
-   * `python export_to_flutter_v2.py`
-   * Les fichiers `bird_classifier_v2.tflite` et `mynanet_classifier_v2.tflite` générés seront automatiquement copiés dans le dossier `assets/model/` de l'application.
+   * `python export_mynanet_pcen_to_flutter.py`
+   * `python export_compact_pcen_to_flutter.py`
+   * Les fichiers `bird_classifier_v3.tflite` et `mynanet_classifier_v3.tflite` générés seront automatiquement copiés dans le dossier `assets/model/` de l'application.
 
 ---
 
 ## 🎨 Caractéristiques & UI
-* **Ensemble Double Sigmoid** : Utilisation conjointe de MynaNet (64x300) et du Compact CNN (128x128) avec calcul de confiance multi-label et TTA (Test-Time Augmentation) par fenêtre glissante.
+* **Ensemble Double Sigmoid v3 (PCEN + Égalisation Spectrale - 87,41%)** : Utilisation conjointe de MynaNet (64x300) et du Compact CNN (128x128) avec filtrage adaptatif PCEN, soustraction spectrale du bruit de fond et TTA (Test-Time Augmentation) par fenêtre glissante.
 * **Visualiseur d'ondes audio** : Une onde sinusoïdale dynamique (`SoundWaveVisualizer` sous forme de CustomPainter) s'anime en temps réel lors de l'enregistrement.
 * **Base de données de profils d'espèces** : Fiche descriptive de chaque oiseau avec des photos HD récupérées dynamiquement de Wikimedia Commons et embarquées localement.
 * **Historique des détections** : Stockage local persistant SQLite (`sqflite`) avec horodatage pour enregistrer vos observations.
 * **Localisation multilingue** : Support complet du Français, de l'Anglais et du Malais.
-
