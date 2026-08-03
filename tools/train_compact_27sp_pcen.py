@@ -1,0 +1,259 @@
+import os
+import sys
+import glob
+
+# Load CUDA 11.2 DLLs installed via pip
+try:
+    site_packages = next(p for p in sys.path if 'site-packages' in p)
+    nvidia_base = os.path.join(site_packages, 'nvidia')
+    if os.path.exists(nvidia_base):
+        for module in os.listdir(nvidia_base):
+            bin_dir = os.path.join(nvidia_base, module, 'bin')
+            if os.path.exists(bin_dir):
+                os.environ['PATH'] = bin_dir + os.pathsep + os.environ['PATH']
+                try:
+                    os.add_dll_directory(bin_dir)
+                except AttributeError:
+                    pass
+except Exception as e:
+    print("Info: Unable to add CUDA DLLs:", e)
+
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
+from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau, ModelCheckpoint
+from sklearn.utils.class_weight import compute_class_weight
+import random
+import librosa
+import numpy as np
+import json
+import matplotlib.pyplot as plt
+from scipy import signal
+
+DATASET_DIR = os.path.join(os.path.dirname(__file__), '..', 'dataset')
+LABELS_FILE = os.path.join(DATASET_DIR, 'labels.json')
+
+if not os.path.exists(LABELS_FILE):
+    raise Exception(f"Labels file not found: {LABELS_FILE}.")
+
+with open(LABELS_FILE, 'r') as f:
+    safe_labels = json.load(f)
+
+# Auto-detect valid labels
+active_labels = []
+for label_name in safe_labels:
+    pattern = os.path.join(DATASET_DIR, 'train', label_name, '*.wav')
+    if len(glob.glob(pattern)) > 0:
+        active_labels.append(label_name)
+
+print(f"Found {len(active_labels)} species with data out of {len(safe_labels)}.")
+safe_labels = active_labels
+NUM_CLASSES = len(safe_labels)
+
+# Audio parameters (Compact CNN PCEN)
+SR = 16000
+N_FFT = 1024
+HOP = 512
+N_MELS = 128
+TIME_FRAMES = 128
+INPUT_SHAPE = (128, 128, 1)
+
+def get_dataset_files(split, max_per_class=800):
+    all_files_by_class = []
+    for i, label_name in enumerate(safe_labels):
+        pattern = os.path.join(DATASET_DIR, split, label_name, '*.wav')
+        files = glob.glob(pattern)
+        if len(files) > 0:
+            all_files_by_class.append((i, files))
+        
+    selected_files = []
+    selected_labels = []
+    class_counts = {}
+    
+    for i, files in all_files_by_class:
+        random.shuffle(files)
+        chosen = files[:max_per_class]
+        class_counts[i] = len(chosen)
+        for f in chosen:
+            selected_files.append(f)
+            selected_labels.append(i)
+            
+    combined = list(zip(selected_files, selected_labels))
+    random.shuffle(combined)
+    selected_files, selected_labels = zip(*combined)
+    selected_files = list(selected_files)
+    selected_labels = list(selected_labels)
+            
+    print(f'Set "{split}" - Total fichiers : {len(selected_files)}')
+    return selected_files, selected_labels, class_counts
+
+def apply_bandpass_filter(data, fs, lowcut=300.0, highcut=7999.0, order=5):
+    nyq = 0.5 * fs
+    low = lowcut / nyq
+    high = highcut / nyq
+    sos = signal.butter(order, [low, high], btype='band', output='sos')
+    return signal.sosfiltfilt(sos, data)
+
+def audio_generator(files, labels):
+    for f, l in zip(files, labels):
+        try:
+            y, sr = librosa.load(f, sr=SR, mono=True, dtype=np.float32)
+            y = apply_bandpass_filter(y, sr).astype(np.float32)
+            
+            if len(y) < 48000:
+                y = np.pad(y, (0, 48000 - len(y)))
+                
+            chunks_energy = []
+            step = 8000
+            for i in range(0, len(y) - 48000 + 1, step):
+                c = y[i:i+48000]
+                chunks_energy.append((np.sum(c**2), i))
+                
+            if not chunks_energy:
+                chunks_energy.append((np.sum(y[:48000]**2), 0))
+                
+            chunks_energy.sort(key=lambda x: x[0], reverse=True)
+            max_e = chunks_energy[0][0]
+            
+            selected_indices = []
+            for e, idx in chunks_energy:
+                if len(selected_indices) >= 5:
+                    break
+                if e < max_e * 0.1:
+                    continue
+                if not any(abs(idx - sel) < 48000 for sel in selected_indices):
+                    selected_indices.append(idx)
+                    
+            if not selected_indices:
+                selected_indices = [chunks_energy[0][1]]
+                
+            for idx in selected_indices:
+                chunk = y[idx:idx+48000]
+                max_amp = np.max(np.abs(chunk))
+                if max_amp > 0:
+                    chunk = chunk / (max_amp + 1e-7)
+                    
+                mel = librosa.feature.melspectrogram(
+                    y=chunk, sr=SR, n_fft=N_FFT, hop_length=HOP, n_mels=N_MELS, fmin=300, fmax=8000
+                )
+                
+                # 1. Spectral Noise Equalization (Background Subtraction)
+                noise_floor = np.median(mel, axis=1, keepdims=True)
+                mel_clean = np.maximum(mel - 0.8 * noise_floor, 1e-10)
+                
+                # 2. Per-Channel Energy Normalization (PCEN)
+                pcen = librosa.pcen(
+                    mel_clean, sr=SR, hop_length=HOP, time_constant=0.4, gain=0.8, bias=10.0, power=0.25, eps=1e-6
+                )
+                
+                if pcen.shape[1] < TIME_FRAMES:
+                    pcen = np.pad(pcen, ((0,0),(0, TIME_FRAMES - pcen.shape[1])), constant_values=0.0)
+                else:
+                    pcen = pcen[:, :TIME_FRAMES]
+                    
+                # Transpose to [128, 128] for Compact CNN
+                spec = pcen.T[..., np.newaxis].astype(np.float32)
+                label_vec = keras.utils.to_categorical(l, num_classes=NUM_CLASSES)
+                yield spec, label_vec
+        except Exception:
+            continue
+
+train_files, train_labels, train_counts = get_dataset_files('train', max_per_class=800)
+val_files, val_labels, val_counts = get_dataset_files('val', max_per_class=400)
+
+class_weights_arr = compute_class_weight('balanced', classes=np.unique(train_labels), y=train_labels)
+class_weights_dict = dict(enumerate(class_weights_arr))
+print(f"Calculated Class Weights for {NUM_CLASSES} species.")
+
+train_ds = tf.data.Dataset.from_generator(
+    lambda: audio_generator(train_files, train_labels),
+    output_signature=(
+        tf.TensorSpec(shape=INPUT_SHAPE, dtype=tf.float32),
+        tf.TensorSpec(shape=(NUM_CLASSES,), dtype=tf.float32)
+    )
+).cache().shuffle(2000).batch(16).prefetch(tf.data.AUTOTUNE)
+
+val_ds = tf.data.Dataset.from_generator(
+    lambda: audio_generator(val_files, val_labels),
+    output_signature=(
+        tf.TensorSpec(shape=INPUT_SHAPE, dtype=tf.float32),
+        tf.TensorSpec(shape=(NUM_CLASSES,), dtype=tf.float32)
+    )
+).cache().batch(16).prefetch(tf.data.AUTOTUNE)
+
+def build_compact_cnn_27sp(input_shape=(128, 128, 1), num_classes=27):
+    model = keras.Sequential([
+        keras.Input(shape=input_shape),
+        layers.Conv2D(32, (3, 3), activation='relu', padding='same'),
+        layers.BatchNormalization(),
+        layers.MaxPooling2D((2, 2)),
+        layers.Dropout(0.25),
+
+        layers.Conv2D(64, (3, 3), activation='relu', padding='same'),
+        layers.BatchNormalization(),
+        layers.MaxPooling2D((2, 2)),
+        layers.Dropout(0.25),
+
+        layers.Conv2D(128, (3, 3), activation='relu', padding='same'),
+        layers.BatchNormalization(),
+        layers.MaxPooling2D((2, 2)),
+        layers.Dropout(0.3),
+
+        layers.GlobalAveragePooling2D(),
+        layers.Dense(128, activation='relu'),
+        layers.Dropout(0.4),
+        layers.Dense(num_classes, activation='sigmoid')
+    ], name="Compact_CNN_27Sp_PCEN")
+    return model
+
+model = build_compact_cnn_27sp(input_shape=INPUT_SHAPE, num_classes=NUM_CLASSES)
+
+initial_lr = 1e-3
+model.compile(
+    optimizer=keras.optimizers.Adam(learning_rate=initial_lr),
+    loss='binary_crossentropy',
+    metrics=['accuracy']
+)
+
+model.summary()
+
+MODEL_SAVE_PATH = os.path.join(DATASET_DIR, 'best_model_compact_27sp_pcen.keras')
+
+callbacks = [
+    EarlyStopping(monitor='val_accuracy', patience=12, restore_best_weights=True, verbose=1),
+    ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=4, min_lr=1e-6, verbose=1),
+    ModelCheckpoint(MODEL_SAVE_PATH, monitor='val_accuracy', save_best_only=True, verbose=1)
+]
+
+print("\n--- Lancement de l'Entraînement Compact CNN 27-Espèces PCEN (Balanced Weights) ---")
+print(f"Modèle sauvegardé sous: {MODEL_SAVE_PATH}")
+
+history = model.fit(
+    train_ds,
+    validation_data=val_ds,
+    epochs=40,
+    callbacks=callbacks,
+    class_weight=class_weights_dict
+)
+
+val_acc = max(history.history['val_accuracy'])
+print(f"\n==========================================")
+print(f"Meilleure Précision de Validation Compact CNN 27-Espèces PCEN: {val_acc*100:.2f}%")
+print(f"==========================================")
+
+plt.figure(figsize=(10, 4))
+plt.subplot(1, 2, 1)
+plt.plot(history.history['accuracy'], label='Train Accuracy')
+plt.plot(history.history['val_accuracy'], label='Val Accuracy')
+plt.title('Compact CNN 27-Espèces PCEN Accuracy')
+plt.legend()
+
+plt.subplot(1, 2, 2)
+plt.plot(history.history['loss'], label='Train Loss')
+plt.plot(history.history['val_loss'], label='Val Loss')
+plt.title('Compact CNN 27-Espèces PCEN Loss')
+plt.legend()
+
+plot_path = os.path.join(DATASET_DIR, 'compact_27sp_pcen_history.png')
+plt.savefig(plot_path)
+print(f"Graphique sauvegardé sous: {plot_path}")

@@ -1,6 +1,6 @@
 {
-  "model_name": "ZamZam_Compact_CNN_PCEN_v3",
-  "architecture": "Compact CNN + PCEN + Spectral Subtraction",
+  "model_name": "ZamZam_Compact_CNN_27Sp_PCEN_v3",
+  "architecture": "Compact CNN + PCEN + Spectral Subtraction (27 Species)",
   "input_shape": [
     1,
     128,
@@ -8,6 +8,7 @@
     1
   ],
   "sample_rate": 16000,
+  "num_classes": 27,
   "f_min": 300.0,
   "f_max": 8000.0,
   "n_mels": 128,
