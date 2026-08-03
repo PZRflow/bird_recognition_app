@@ -182,28 +182,39 @@ val_ds = tf.data.Dataset.from_generator(
 ).cache().batch(16).prefetch(tf.data.AUTOTUNE)
 
 def build_compact_cnn_27sp(input_shape=(128, 128, 1), num_classes=27):
-    model = keras.Sequential([
-        keras.Input(shape=input_shape),
-        layers.Conv2D(32, (3, 3), activation='relu', padding='same'),
-        layers.BatchNormalization(),
-        layers.MaxPooling2D((2, 2)),
-        layers.Dropout(0.25),
+    inputs = keras.Input(shape=input_shape)
+    
+    # Block 1
+    x = layers.Conv2D(32, (3, 3), padding='same', use_bias=False)(inputs)
+    x = layers.BatchNormalization()(x)
+    x = layers.Activation('swish')(x)
+    x = layers.MaxPooling2D((2, 2))(x) # (64, 64)
+    
+    # Block 2
+    x = layers.Conv2D(64, (3, 3), padding='same', use_bias=False)(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Activation('swish')(x)
+    x = layers.MaxPooling2D((2, 2))(x) # (32, 32)
+    
+    # Block 3
+    x = layers.Conv2D(128, (3, 3), padding='same', use_bias=False)(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Activation('swish')(x)
+    x = layers.MaxPooling2D((2, 2))(x) # (16, 16)
 
-        layers.Conv2D(64, (3, 3), activation='relu', padding='same'),
-        layers.BatchNormalization(),
-        layers.MaxPooling2D((2, 2)),
-        layers.Dropout(0.25),
-
-        layers.Conv2D(128, (3, 3), activation='relu', padding='same'),
-        layers.BatchNormalization(),
-        layers.MaxPooling2D((2, 2)),
-        layers.Dropout(0.3),
-
-        layers.GlobalAveragePooling2D(),
-        layers.Dense(128, activation='relu'),
-        layers.Dropout(0.4),
-        layers.Dense(num_classes, activation='sigmoid')
-    ], name="Compact_CNN_27Sp_PCEN")
+    # Block 4
+    x = layers.Conv2D(256, (3, 3), padding='same', use_bias=False)(x)
+    x = layers.BatchNormalization()(x)
+    x = layers.Activation('swish')(x)
+    x = layers.GlobalAveragePooling2D()(x)
+    
+    # Head
+    x = layers.Dropout(0.3)(x)
+    x = layers.Dense(128, activation='relu')(x)
+    x = layers.Dropout(0.2)(x)
+    outputs = layers.Dense(num_classes, activation='sigmoid')(x)
+    
+    model = keras.Model(inputs, outputs, name="Compact_CNN_27Sp_PCEN")
     return model
 
 model = build_compact_cnn_27sp(input_shape=INPUT_SHAPE, num_classes=NUM_CLASSES)

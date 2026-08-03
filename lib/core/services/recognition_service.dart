@@ -270,9 +270,9 @@ class RecognitionService {
           var outputCompact = List.generate(1, (i) => List.filled(_labels!.length, 0.0));
           _interpreterCompact!.run(tensorCompact, outputCompact);
 
-          // 3. Average them (Optimal configuration: 0.4 MynaNet PCEN + 0.6 Compact CNN PCEN)
+          // 3. Average them (Optimal 27-species configuration: 0.50 MynaNet PCEN + 0.50 Compact CNN PCEN -> 87.55%)
           segmentProbs = List.generate(_labels!.length, (idx) {
-            return 0.4 * outputMyna[0][idx] + 0.6 * outputCompact[0][idx];
+            return 0.50 * outputMyna[0][idx] + 0.50 * outputCompact[0][idx];
           });
         } else {
           // Standard run
