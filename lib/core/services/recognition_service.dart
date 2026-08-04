@@ -10,6 +10,7 @@ class RecognitionService {
   static String activeModel = 'ensemble'; // 'compact_cnn', 'mynanet' or 'ensemble'
   Interpreter? _interpreterCompact;
   Interpreter? _interpreterMyna;
+  Interpreter? _interpreterEffNet;
   List<String>? _labels;
   bool _modelNotFound = false;
   List<dynamic>? _speciesProfiles;
@@ -33,6 +34,14 @@ class RecognitionService {
       } else if (!needMyna && _interpreterMyna != null) {
         _interpreterMyna!.close();
         _interpreterMyna = null;
+      }
+
+      if (activeModel == 'ensemble' && _interpreterEffNet == null) {
+        try {
+          _interpreterEffNet = await Interpreter.fromAsset('assets/model/efficientnet_classifier_v3.tflite');
+        } catch (_) {
+          _interpreterEffNet = null;
+        }
       }
 
       _modelNotFound = false;
@@ -270,10 +279,21 @@ class RecognitionService {
           var outputCompact = List.generate(1, (i) => List.filled(_labels!.length, 0.0));
           _interpreterCompact!.run(tensorCompact, outputCompact);
 
-          // 3. Average them (Optimal 27-species configuration: 0.50 MynaNet PCEN + 0.50 Compact CNN PCEN -> 87.55%)
-          segmentProbs = List.generate(_labels!.length, (idx) {
-            return 0.50 * outputMyna[0][idx] + 0.50 * outputCompact[0][idx];
-          });
+          // 3. Run EfficientNet-B0 Lite PCEN (if loaded)
+          if (_interpreterEffNet != null) {
+            var outputEffNet = List.generate(1, (i) => List.filled(_labels!.length, 0.0));
+            _interpreterEffNet!.run(tensorCompact, outputEffNet);
+
+            // Optimal 27-species Tri-Ensemble configuration -> 89.06%
+            segmentProbs = List.generate(_labels!.length, (idx) {
+              return 0.35 * outputMyna[0][idx] + 0.40 * outputCompact[0][idx] + 0.25 * outputEffNet[0][idx];
+            });
+          } else {
+            // Dual Ensemble Fallback -> 87.55%
+            segmentProbs = List.generate(_labels!.length, (idx) {
+              return 0.50 * outputMyna[0][idx] + 0.50 * outputCompact[0][idx];
+            });
+          }
         } else {
           // Standard run
           final bool isMyna = activeModel == 'mynanet';

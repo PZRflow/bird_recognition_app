@@ -1,0 +1,22 @@
+{
+  "model_name": "EfficientNet_B0_27Sp_PCEN_v3",
+  "architecture": "EfficientNet-B0 + PCEN + Spectral Subtraction (27 Species)",
+  "input_shape": [
+    1,
+    128,
+    128,
+    1
+  ],
+  "sample_rate": 16000,
+  "num_classes": 27,
+  "f_min": 300.0,
+  "f_max": 8000.0,
+  "n_mels": 128,
+  "hop_length": 512,
+  "win_length": 1024,
+  "pcen_time_constant": 0.4,
+  "pcen_gain": 0.8,
+  "pcen_bias": 10.0,
+  "pcen_power": 0.25,
+  "quantization": "float16"
+}
