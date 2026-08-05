@@ -41,6 +41,14 @@
   },
   {
     "id": 5,
+    "scientific": "Todiramphus chloris",
+    "english": "Collared Kingfisher",
+    "malay": "Raja Udang Pekaka",
+    "french": "Martin-chasseur sacré",
+    "imageUrl": "assets/images/todiramphus_chloris.jpg"
+  },
+  {
+    "id": 6,
     "scientific": "Aegithina tiphia",
     "english": "Common Iora",
     "malay": "Burung Kunyit Kecil",
@@ -48,7 +56,7 @@
     "imageUrl": "assets/images/aegithina_tiphia.jpg"
   },
   {
-    "id": 6,
+    "id": 7,
     "scientific": "Orthotomus sutorius",
     "english": "Common Tailorbird",
     "malay": "Laki Padi Biasa",
@@ -56,7 +64,15 @@
     "imageUrl": "assets/images/orthotomus_sutorius.jpg"
   },
   {
-    "id": 7,
+    "id": 8,
+    "scientific": "Psilopogon haemacephalus",
+    "english": "Coppersmith Barbet",
+    "malay": "Takur Tembaga",
+    "french": "Barbu à plastron rouge",
+    "imageUrl": "assets/images/psilopogon_haemacephalus.jpg"
+  },
+  {
+    "id": 9,
     "scientific": "Orthotomus atrogularis",
     "english": "Dark-necked Tailorbird",
     "malay": "Laki Padi Leher Hitam",
@@ -64,7 +80,7 @@
     "imageUrl": "assets/images/orthotomus_atrogularis.jpg"
   },
   {
-    "id": 8,
+    "id": 10,
     "scientific": "Dicrurus paradiseus",
     "english": "Greater Racket-tailed Drongo",
     "malay": "Burung Hamba Kera",
@@ -72,7 +88,7 @@
     "imageUrl": "assets/images/dicrurus_paradiseus.jpg"
   },
   {
-    "id": 9,
+    "id": 11,
     "scientific": "Culicicapa ceylonensis",
     "english": "Grey-headed Canary-flycatcher",
     "malay": "Sambar-Kuning Kepala Kelabu",
@@ -80,7 +96,7 @@
     "imageUrl": "assets/images/culicicapa_ceylonensis.jpg"
   },
   {
-    "id": 10,
+    "id": 12,
     "scientific": "Caprimulgus macrurus",
     "english": "Large-tailed Nightjar",
     "malay": "Burung Tukang Kubur",
@@ -88,7 +104,7 @@
     "imageUrl": "assets/images/caprimulgus_macrurus.jpg"
   },
   {
-    "id": 11,
+    "id": 13,
     "scientific": "Arachnothera longirostra",
     "english": "Little Spiderhunter",
     "malay": "Kelichap Jantung Kecil",
@@ -96,7 +112,7 @@
     "imageUrl": "assets/images/arachnothera_longirostra.jpg"
   },
   {
-    "id": 12,
+    "id": 14,
     "scientific": "Phyllergates cucullatus",
     "english": "Mountain Tailorbird",
     "malay": "Laki Padi Gunung",
@@ -104,7 +120,7 @@
     "imageUrl": "assets/images/phyllergates_cucullatus.jpg"
   },
   {
-    "id": 13,
+    "id": 15,
     "scientific": "Cinnyris jugularis",
     "english": "Olive-backed Sunbird",
     "malay": "Kelichap Kelapa",
@@ -112,7 +128,15 @@
     "imageUrl": "assets/images/cinnyris_jugularis.jpg"
   },
   {
-    "id": 14,
+    "id": 16,
+    "scientific": "Rhipidura javanica",
+    "english": "Pied Fantail",
+    "malay": "Murai Gila",
+    "french": "Rhipidure javanais",
+    "imageUrl": "assets/images/rhipidura_javanica.jpg"
+  },
+  {
+    "id": 17,
     "scientific": "Mixornis gularis",
     "english": "Pin-striped Tit-Babbler",
     "malay": "Rembah Rimba Belang",
@@ -120,7 +144,7 @@
     "imageUrl": "assets/images/mixornis_gularis.jpg"
   },
   {
-    "id": 15,
+    "id": 18,
     "scientific": "Cacomantis merulinus",
     "english": "Plaintive Cuckoo",
     "malay": "Burung Mati Anak",
@@ -128,7 +152,7 @@
     "imageUrl": "assets/images/cacomantis_merulinus.jpg"
   },
   {
-    "id": 16,
+    "id": 19,
     "scientific": "Pellorneum ruficeps",
     "english": "Puff-throated Babbler",
     "malay": "Rembah Rimba Berbintik",
@@ -136,7 +160,7 @@
     "imageUrl": "assets/images/pellorneum_ruficeps.jpg"
   },
   {
-    "id": 17,
+    "id": 20,
     "scientific": "Pnoepyga pusilla",
     "english": "Pygmy Cupwing",
     "malay": "Burung Ekor Pendek Pygmy",
@@ -144,7 +168,31 @@
     "imageUrl": "assets/images/pnoepyga_pusilla.jpg"
   },
   {
-    "id": 18,
+    "id": 21,
+    "scientific": "Spilopelia chinensis",
+    "english": "Spotted Dove",
+    "malay": "Terkukur",
+    "french": "Tourterelle tigrine",
+    "imageUrl": "assets/images/spilopelia_chinensis.jpg"
+  },
+  {
+    "id": 22,
+    "scientific": "Amaurornis phoenicurus",
+    "english": "White-breasted Waterhen",
+    "malay": "Ruak-Ruak",
+    "french": "Râle à poitrine blanche",
+    "imageUrl": "assets/images/amaurornis_phoenicurus.jpg"
+  },
+  {
+    "id": 23,
+    "scientific": "Halcyon smyrnensis",
+    "english": "White-throated Kingfisher",
+    "malay": "Pekaka Dada Putih",
+    "french": "Martin-chasseur smyrne",
+    "imageUrl": "assets/images/halcyon_smyrnensis.jpg"
+  },
+  {
+    "id": 24,
     "scientific": "Prinia flaviventris",
     "english": "Yellow-bellied Prinia",
     "malay": "Perenjak Perut Kuning",
@@ -152,11 +200,19 @@
     "imageUrl": "assets/images/prinia_flaviventris.jpg"
   },
   {
-    "id": 19,
+    "id": 25,
     "scientific": "Phylloscopus inornatus",
     "english": "Yellow-browed Warbler",
     "malay": "Cekup Alis Kuning",
     "french": "Pouillot à grands sourcils",
     "imageUrl": "assets/images/phylloscopus_inornatus.jpg"
+  },
+  {
+    "id": 26,
+    "scientific": "Pycnonotus goiavier",
+    "english": "Yellow-vented Bulbul",
+    "malay": "Merbah Kapur",
+    "french": "Bulbul goiavier",
+    "imageUrl": "assets/images/pycnonotus_goiavier.jpg"
   }
 ]

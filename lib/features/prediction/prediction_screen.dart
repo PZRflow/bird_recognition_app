@@ -126,6 +126,8 @@ class _PredictionScreenState extends State<PredictionScreen> {
                   const SizedBox(height: 100),
                   // Audio Playback Bar
                   _buildAudioHeader(),
+                  // User Confidence Threshold Slider
+                  _buildThresholdBar(),
                   Expanded(
                     child: isSilenceOrUnknown
                         ? _buildSilenceCard(_predictions.first)
@@ -179,6 +181,57 @@ class _PredictionScreenState extends State<PredictionScreen> {
                   overflow: TextOverflow.ellipsis,
                 ),
               ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildThresholdBar() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Seuil de Confiance (Seuil Inconnu):',
+                style: TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                '${(RecognitionService.userThreshold * 100).toInt()}%',
+                style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: 13, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          SliderTheme(
+            data: SliderTheme.of(context).copyWith(
+              trackHeight: 3,
+              thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 7),
+            ),
+            child: Slider(
+              value: RecognitionService.userThreshold,
+              min: 0.30,
+              max: 0.80,
+              divisions: 10,
+              activeColor: Theme.of(context).colorScheme.primary,
+              inactiveColor: Colors.white24,
+              onChanged: (val) {
+                setState(() {
+                  RecognitionService.userThreshold = val;
+                  _isLoading = true;
+                });
+                _runPrediction();
+              },
             ),
           ),
         ],

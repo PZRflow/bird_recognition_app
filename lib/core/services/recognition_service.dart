@@ -8,6 +8,7 @@ import 'mel_extractor.dart';
 
 class RecognitionService {
   static String activeModel = 'ensemble'; // 'compact_cnn', 'mynanet' or 'ensemble'
+  static double userThreshold = 0.50; // User-configurable threshold (0.30 to 0.80)
   Interpreter? _interpreterCompact;
   Interpreter? _interpreterMyna;
   Interpreter? _interpreterEffNet;
@@ -378,18 +379,14 @@ class RecognitionService {
     
     results.sort((a, b) => b['score'].compareTo(a['score']));
     
-    // Strict Confidence & Out-of-Distribution Rejection Threshold:
-    // Require at least 60% (0.60) score to confirm a valid bird call.
-    // Human speech, music, or non-bird noises typically yield weak scores (30%-50%) and will be cleanly rejected.
     final double topScore = results[0]['score'];
-    final double secondScore = results.length > 1 ? results[1]['score'] : 0.0;
     
-    if (topScore < 0.60 || (topScore - secondScore < 0.10 && topScore < 0.70)) {
+    if (topScore < userThreshold) {
       return [BirdPrediction(
-        commonName: 'Unknown species',
+        commonName: 'Espèce inconnue',
         scientificName: 'Unidentified',
         score: topScore,
-        description: 'The audio (speech or ambient noise) does not match any of the 20 known bird species with high confidence.',
+        description: 'Le signal audio n\'atteint pas votre seuil de confiance défini (${(userThreshold * 100).toInt()}%).',
         imageUrl: 'https://images.unsplash.com/photo-1555169062-0133c8dc7c76?w=800',
       ),];
     }
