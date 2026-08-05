@@ -58,7 +58,7 @@ for f64, f128, true_label in zip(val_files_64, val_files_128, val_labels):
         p_compact = compact.predict(np.transpose(specs_128, (0, 2, 1))[..., np.newaxis], verbose=0)
         p_effnet = effnet.predict(np.transpose(specs_128, (0, 2, 1))[..., np.newaxis], verbose=0)
         
-        tri_p = 0.35 * p_myna + 0.40 * p_compact + 0.25 * p_effnet
+        tri_p = 0.40 * p_myna + 0.45 * p_compact + 0.15 * p_effnet
         avg_tri = np.max(tri_p, axis=0)
         
         y_true.append(true_label)

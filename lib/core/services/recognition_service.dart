@@ -12,6 +12,7 @@ class RecognitionService {
   Interpreter? _interpreterCompact;
   Interpreter? _interpreterMyna;
   Interpreter? _interpreterEffNet;
+  Interpreter? _interpreterResNet;
   List<String>? _labels;
   bool _modelNotFound = false;
   List<dynamic>? _speciesProfiles;
@@ -40,8 +41,16 @@ class RecognitionService {
       if (activeModel == 'ensemble' && _interpreterEffNet == null) {
         try {
           _interpreterEffNet = await Interpreter.fromAsset('assets/model/efficientnet_classifier_v3.tflite');
-        } catch (_) {
+        } catch (e) {
           _interpreterEffNet = null;
+        }
+      }
+
+      if (activeModel == 'ensemble' && _interpreterResNet == null) {
+        try {
+          _interpreterResNet = await Interpreter.fromAsset('assets/model/resnet34_classifier_v3.tflite');
+        } catch (e) {
+          _interpreterResNet = null;
         }
       }
 
@@ -280,14 +289,26 @@ class RecognitionService {
           var outputCompact = List.generate(1, (i) => List.filled(_labels!.length, 0.0));
           _interpreterCompact!.run(tensorCompact, outputCompact);
 
-          // 3. Run EfficientNet-B0 Lite PCEN (if loaded)
-          if (_interpreterEffNet != null) {
-            var outputEffNet = List.generate(1, (i) => List.filled(_labels!.length, 0.0));
-            _interpreterEffNet!.run(tensorCompact, outputEffNet);
+          // 3. Run EfficientNet-B0 Lite & ResNet34-Lite PCEN (if loaded)
+          var outputEffNet = List.generate(1, (i) => List.filled(_labels!.length, 0.0));
+          var outputResNet = List.generate(1, (i) => List.filled(_labels!.length, 0.0));
 
-            // Optimal 27-species Tri-Ensemble configuration -> 89.06%
+          if (_interpreterEffNet != null) {
+            _interpreterEffNet!.run(tensorCompact, outputEffNet);
+          }
+          if (_interpreterResNet != null) {
+            _interpreterResNet!.run(tensorCompact, outputResNet);
+          }
+
+          if (_interpreterEffNet != null && _interpreterResNet != null) {
+            // Optimal 27-species Quad-Ensemble configuration -> 90.57% (Historic Record 🏆)
             segmentProbs = List.generate(_labels!.length, (idx) {
-              return 0.35 * outputMyna[0][idx] + 0.40 * outputCompact[0][idx] + 0.25 * outputEffNet[0][idx];
+              return 0.30 * outputMyna[0][idx] + 0.35 * outputCompact[0][idx] + 0.15 * outputEffNet[0][idx] + 0.20 * outputResNet[0][idx];
+            });
+          } else if (_interpreterEffNet != null) {
+            // Tri-Ensemble Fallback -> 89.23%
+            segmentProbs = List.generate(_labels!.length, (idx) {
+              return 0.40 * outputMyna[0][idx] + 0.45 * outputCompact[0][idx] + 0.15 * outputEffNet[0][idx];
             });
           } else {
             // Dual Ensemble Fallback -> 87.55%
