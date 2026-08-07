@@ -1,8 +1,22 @@
 # ZamZam — Shazam for Malaysian Birds 🇲🇾🦅
 
-ZamZam est une application mobile Flutter conçue pour fonctionner **100% hors-ligne** (adaptée pour le travail de terrain dans les forêts tropicales malaisiennes), permettant d'identifier instantanément les espèces d'oiseaux à partir d'enregistrements audio.
+ZamZam est une application mobile Flutter d'élite conçue pour fonctionner **100% hors-ligne** (adaptée pour le travail de terrain dans les forêts tropicales malaisiennes), permettant d'identifier instantanément les espèces d'oiseaux à partir d'enregistrements audio au micro ou d'importation de fichiers (MP3, WAV, FLAC, M4A, OGG).
 
-L'intelligence de l'application repose sur un **Ensemble de réseaux de neurones profonds Double Sigmoid (MynaNet + Compact CNN)** entraînés sur les données Xeno-Canto.
+L'intelligence de l'application repose sur un **Quad-Ensemble de réseaux de neurones profonds (MynaNet + Compact CNN + EfficientNet-B0 + ResNet34-Lite)** fusionnés avec un score record historique de **`90.57%`** de précision sur 27 espèces d'oiseaux de Malaisie.
+
+---
+
+## 🏆 Performances du Modèle Quad-Ensemble (27 Espèces, 2 322 Fichiers de Validation)
+
+| Modèle / Architecture | Entrée Spectrogramme | Précision Solo / Fusion | Rôle dans l'Ensemble |
+| :--- | :---: | :---: | :--- |
+| **1. MynaNet** (MobileNet-SE) | $64 \times 300$ PCEN | **84,32%** | Résolution temporelle fine (capter les notes courtes) |
+| **2. Compact CNN** (4-Block Swish) | $128 \times 128$ PCEN | **85,14%** | Représentation spectro-temporelle équilibrée |
+| **3. EfficientNet-B0 Lite** | $128 \times 128$ PCEN | **82,17%** | Extracteur de caractéristiques convolutives profondes |
+| **4. ResNet34-Lite** | $128 \times 128$ PCEN | **84,57%** | Bloc résiduel à connexions raccourcies |
+| 👑 **QUAD-ENSEMBLE FUSION** | **Fusion Pondérée** | **`90,57%`** | **Record Historique Absolue du Projet** |
+
+$$\text{Prédiction Finale} = 0,30 \cdot P_{\text{Myna}} + 0,35 \cdot P_{\text{Compact}} + 0,15 \cdot P_{\text{EffNet}} + 0,20 \cdot P_{\text{ResNet}}$$
 
 ---
 
@@ -33,31 +47,19 @@ L'intelligence de l'application repose sur un **Ensemble de réseaux de neurones
 
 ---
 
-## 🧠 Pipeline MLOps & Entraînement (Dossier `/tools`)
+## 🧠 Pipeline MLOps & Signal Processing (Dossier `/tools`)
 
-Le projet contient un pipeline complet d'apprentissage automatique dans le dossier `tools/` pour réentraîner les modèles localement.
-
-### Configuration Locale
-1. Installez Python 3.10+ et créez un environnement virtuel :
-   ```bash
-   cd tools
-   python -m venv .venv
-   source .venv/bin/activate  # Sur Windows: .venv\Scripts\activate
-   pip install -r requirements.txt
-   ```
-2. **Entraîner les modèles (Version v3 PCEN Ensemble - Record 87.41%)** :
-   * Pour le modèle principal MynaNet PCEN : `python train_mynanet_pcen.py`
-   * Pour le modèle complémentaire Compact CNN PCEN : `python train_compact_pcen.py`
-3. **Exporter au format TFLite pour Flutter** :
-   * `python export_mynanet_pcen_to_flutter.py`
-   * `python export_compact_pcen_to_flutter.py`
-   * Les fichiers `bird_classifier_v3.tflite` et `mynanet_classifier_v3.tflite` générés seront automatiquement copiés dans le dossier `assets/model/` de l'application.
+1. **Prétraitement Audio & Filtrage DSP** :
+   * Normalisation PCM 16 kHz Mono.
+   * Filtre Passe-Bande Butterworth 2nd ordre ($300\text{ Hz} - 8000\text{ Hz}$) pour éliminer le vent et le bruit urbain sous 300 Hz.
+   * Multi-segmentation RMS dynamique : découpage en segments de 3,0s axés sur les pics d'énergie acoustique du chant.
+2. **Normalisation de l'Énergie par Canal (PCEN)** :
+   * Remplacement du Log-Mel classique par le PCEN pour une insensibilité aux variations de distance et de gain du microphone.
 
 ---
 
-## 🎨 Caractéristiques & UI
-* **Ensemble Double Sigmoid v3 (PCEN + Égalisation Spectrale - 87,41%)** : Utilisation conjointe de MynaNet (64x300) et du Compact CNN (128x128) avec filtrage adaptatif PCEN, soustraction spectrale du bruit de fond et TTA (Test-Time Augmentation) par fenêtre glissante.
-* **Visualiseur d'ondes audio** : Une onde sinusoïdale dynamique (`SoundWaveVisualizer` sous forme de CustomPainter) s'anime en temps réel lors de l'enregistrement.
-* **Base de données de profils d'espèces** : Fiche descriptive de chaque oiseau avec des photos HD récupérées dynamiquement de Wikimedia Commons et embarquées localement.
-* **Historique des détections** : Stockage local persistant SQLite (`sqflite`) avec horodatage pour enregistrer vos observations.
-* **Localisation multilingue** : Support complet du Français, de l'Anglais et du Malais.
+## 🎨 Caractéristiques & UI Flutter
+* **Curseur de Seuil Dynamique ("Oiseau Inconnu")** : Curseur interactif dans l'application (30% à 80%) permettant de basculer les détections incertaines en "Oiseau Inconnu".
+* **Support Multi-Format (FFmpegKit)** : Importation universelle de fichiers audio (`.mp3`, `.wav`, `.flac`, `.m4a`, `.ogg`).
+* **Visualiseur d'ondes audio** : Animation temps réel lors de l'enregistrement micro.
+* **Profils des 27 Espèces** : Noms vernaculaires en Anglais, Malais, Français et noms scientifiques accompagnés de photos HD.
