@@ -266,13 +266,13 @@ class _PredictionScreenState extends State<PredictionScreen> {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 12),
-              Text(
-                isSilence 
-                    ? 'The recording volume is too quiet or contains only ambient background noise.'
-                    : 'The audio does not match any of the 20 known bird species with high confidence.',
-                style: const TextStyle(color: Colors.white70, fontSize: 14),
-                textAlign: TextAlign.center,
-              ),
+                Text(
+                  isSilence 
+                      ? 'The recording volume is too quiet or contains only ambient background noise.'
+                      : 'The audio does not match any of the 27 known Malaysian bird species with high confidence.',
+                  style: const TextStyle(color: Colors.white70, fontSize: 14),
+                  textAlign: TextAlign.center,
+                ),
               const SizedBox(height: 20),
               ElevatedButton.icon(
                 onPressed: _toggleAudio,
