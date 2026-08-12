@@ -120,9 +120,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Dual-Engine AI (Ensemble)', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                Text('Quad-Engine AI Ensemble (90.57% Accuracy)', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
                 SizedBox(height: 4),
-                Text('Combines MynaNet and Compact CNN for optimal recognition accuracy.', style: TextStyle(color: Colors.white70, fontSize: 13)),
+                Text('Combines MynaNet, Compact CNN, EfficientNet-B0, and ResNet34-Lite for maximum accuracy across 27 Malaysian species.', style: TextStyle(color: Colors.white70, fontSize: 13)),
               ],
             ),
           ),
