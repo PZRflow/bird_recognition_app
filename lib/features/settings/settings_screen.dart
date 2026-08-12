@@ -1,7 +1,10 @@
 // ignore_for_file: deprecated_member_use
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../app.dart';
 import '../../l10n/app_localizations.dart';
+import '../../core/services/recognition_service.dart';
+import '../credits/credits_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -11,6 +14,32 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  double _threshold = RecognitionService.userThreshold;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPreferences();
+  }
+
+  Future<void> _loadPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedThreshold = prefs.getDouble('user_threshold') ?? RecognitionService.userThreshold;
+    setState(() {
+      _threshold = savedThreshold;
+      RecognitionService.userThreshold = savedThreshold;
+    });
+  }
+
+  Future<void> _saveThreshold(double val) async {
+    setState(() {
+      _threshold = val;
+      RecognitionService.userThreshold = val;
+    });
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble('user_threshold', val);
+  }
+
   @override
   Widget build(BuildContext context) {
     final currentLocale = Localizations.localeOf(context);
@@ -18,7 +47,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.settingsTitle, style: const TextStyle(color: Colors.white)),
+        title: Text(AppLocalizations.of(context)!.settingsTitle, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () => Navigator.pop(context),
@@ -26,6 +57,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
       body: Container(
         width: double.infinity,
+        height: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [Color(0xFF0F1A15), Color(0xFF132B20)],
@@ -40,6 +72,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             const SizedBox(height: 8),
             _buildLanguageCard(context, currentLocale),
             const SizedBox(height: 24),
+            _buildSectionHeader(context, 'DETLECTION CONFIDENCE THRESHOLD'),
+            const SizedBox(height: 8),
+            _buildThresholdCard(context),
+            const SizedBox(height: 24),
             _buildSectionHeader(context, AppLocalizations.of(context)!.aiEngineSection.toUpperCase()),
             const SizedBox(height: 8),
             _buildModelSelectionCard(context),
@@ -47,6 +83,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             _buildSectionHeader(context, AppLocalizations.of(context)!.modelInfoSection),
             const SizedBox(height: 8),
             _buildModelInfoCard(context),
+            const SizedBox(height: 24),
+            _buildCreditsCard(context),
           ],
         ),
       ),
@@ -58,8 +96,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: Text(
         title,
-        style: TextStyle(
-          color: Theme.of(context).colorScheme.primary,
+        style: const TextStyle(
+          color: Color(0xFF2ECC71),
           fontWeight: FontWeight.bold,
           fontSize: 12,
           letterSpacing: 1.5,
@@ -93,14 +131,72 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget _buildLanguageOption(BuildContext context, String name, Locale locale, bool isSelected) {
     return ListTile(
       selected: isSelected,
-      selectedTileColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
-      title: Text(name, style: TextStyle(color: isSelected ? Theme.of(context).colorScheme.primary : Colors.white, fontSize: 16, fontWeight: isSelected ? FontWeight.bold : FontWeight.normal)),
+      selectedTileColor: const Color(0xFF2ECC71).withValues(alpha: 0.1),
+      title: Text(name, style: TextStyle(color: isSelected ? const Color(0xFF2ECC71) : Colors.white, fontSize: 16, fontWeight: isSelected ? FontWeight.bold : FontWeight.normal)),
       trailing: isSelected 
-          ? Icon(Icons.check_circle_rounded, color: Theme.of(context).colorScheme.primary)
+          ? const Icon(Icons.check_circle_rounded, color: Color(0xFF2ECC71))
           : null,
       onTap: () {
         BirdRecognitionApp.of(context)?.setLocale(locale);
       },
+    );
+  }
+
+  Widget _buildThresholdCard(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: const Color(0xFF183226),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Minimum Detection Confidence:',
+                style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF2ECC71).withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: const Color(0xFF2ECC71).withValues(alpha: 0.3)),
+                ),
+                child: Text(
+                  '${(_threshold * 100).toInt()}%',
+                  style: const TextStyle(color: Color(0xFF2ECC71), fontSize: 14, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Audio predictions below this threshold will be flagged as "Unknown Species" to prevent false positives.',
+            style: TextStyle(color: Colors.white.withValues(alpha: 0.6), fontSize: 12),
+          ),
+          const SizedBox(height: 12),
+          SliderTheme(
+            data: SliderTheme.of(context).copyWith(
+              trackHeight: 4,
+              thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8),
+            ),
+            child: Slider(
+              value: _threshold,
+              min: 0.30,
+              max: 0.80,
+              divisions: 10,
+              activeColor: const Color(0xFF2ECC71),
+              inactiveColor: Colors.white24,
+              onChanged: (val) => _saveThreshold(val),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -112,11 +208,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
       ),
-      child: Row(
+      child: const Row(
         children: [
-          Icon(Icons.auto_awesome_rounded, color: Theme.of(context).colorScheme.primary, size: 28),
-          const SizedBox(width: 16),
-          const Expanded(
+          Icon(Icons.auto_awesome_rounded, color: Color(0xFF2ECC71), size: 28),
+          SizedBox(width: 16),
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -142,15 +238,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
       child: Column(
         children: [
           _buildInfoRow(AppLocalizations.of(context)!.modelType, 'Quad-Ensemble (4 AI Networks)'),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           _buildInfoRow(AppLocalizations.of(context)!.modelFormat, 'TensorFlow Lite (FP16 PCEN)'),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           _buildInfoRow(AppLocalizations.of(context)!.modelSize, '10.3 MB Footprint'),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           _buildInfoRow(AppLocalizations.of(context)!.numClasses, '27 Malaysian Species'),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           _buildInfoRow('Overall Accuracy', '90.57% Record'),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           _buildInfoRow(AppLocalizations.of(context)!.sampleRateLabel, '16 kHz Mono'),
         ],
       ),
@@ -182,6 +278,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildCreditsCard(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFF183226),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+      ),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        leading: const Icon(Icons.info_outline_rounded, color: Color(0xFF2ECC71)),
+        title: const Text('Credits & Research Acknowledgments', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15)),
+        subtitle: const Text('Xeno-canto v3 API, Prof. Munim dataset, Open Source licenses', style: TextStyle(color: Colors.white54, fontSize: 12)),
+        trailing: const Icon(Icons.arrow_forward_ios_rounded, color: Colors.white54, size: 16),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const CreditsScreen()),
+          );
+        },
       ),
     );
   }

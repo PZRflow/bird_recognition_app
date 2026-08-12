@@ -25,6 +25,7 @@ dependencies:
   http: ^1.2.1
   ffmpeg_kit_flutter_new: ^4.3.2
   google_fonts: ^6.1.0
+  shared_preferences: ^2.5.3
 dev_dependencies:
   flutter_test:
     sdk: flutter

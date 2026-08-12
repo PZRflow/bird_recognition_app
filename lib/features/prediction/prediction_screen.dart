@@ -3,7 +3,6 @@ import '../../core/services/recognition_service.dart';
 import '../../core/services/database_service.dart';
 import '../../models/bird_prediction.dart';
 import '../../models/detection_history.dart';
-import 'dart:ui';
 
 import 'package:audioplayers/audioplayers.dart';
 
@@ -20,6 +19,7 @@ class _PredictionScreenState extends State<PredictionScreen> {
   final AudioPlayer _audioPlayer = AudioPlayer();
   bool _isLoading = true;
   bool _isPlaying = false;
+  bool _hasSavedToHistory = false;
   List<BirdPrediction> _predictions = [];
 
   @override
@@ -63,13 +63,15 @@ class _PredictionScreenState extends State<PredictionScreen> {
       _isLoading = false;
     });
 
-    if (results.isNotEmpty && 
-        results.first.score >= 0.60 && 
+    if (!_hasSavedToHistory &&
+        results.isNotEmpty && 
+        results.first.score >= RecognitionService.userThreshold && 
         results.first.commonName != 'Modèle TFLite Absent' &&
         results.first.commonName != 'Unknown species' &&
         results.first.commonName != 'Espèce inconnue' &&
         results.first.commonName != 'Silence' &&
         results.first.commonName != 'Erreur') {
+      _hasSavedToHistory = true;
       try {
         await DatabaseService.insertDetection(
           DetectionHistory(
@@ -97,7 +99,9 @@ class _PredictionScreenState extends State<PredictionScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: const Text('Results', style: TextStyle(color: Colors.white)),
+        title: const Text('Identification Results', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () => Navigator.pop(context),
@@ -105,6 +109,7 @@ class _PredictionScreenState extends State<PredictionScreen> {
       ),
       body: Container(
         width: double.infinity,
+        height: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [Color(0xFF0F1A15), Color(0xFF132B20)],
@@ -113,12 +118,12 @@ class _PredictionScreenState extends State<PredictionScreen> {
           ),
         ),
         child: _isLoading 
-            ? Column(
+            ? const Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CircularProgressIndicator(color: Theme.of(context).colorScheme.primary),
-                  const SizedBox(height: 20),
-                  const Text('Analyzing by neural network...', style: TextStyle(color: Colors.white70)),
+                  CircularProgressIndicator(color: Color(0xFF2ECC71)),
+                  SizedBox(height: 20),
+                  Text('Analyzing neural network ensemble...', style: TextStyle(color: Colors.white70)),
                 ],
               )
             : Column(
@@ -126,8 +131,6 @@ class _PredictionScreenState extends State<PredictionScreen> {
                   const SizedBox(height: 100),
                   // Audio Playback Bar
                   _buildAudioHeader(),
-                  // User Confidence Threshold Slider
-                  _buildThresholdBar(),
                   Expanded(
                     child: isSilenceOrUnknown
                         ? _buildSilenceCard(_predictions.first)
@@ -151,7 +154,7 @@ class _PredictionScreenState extends State<PredictionScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.08),
+        color: const Color(0xFF183226),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
       ),
@@ -160,7 +163,7 @@ class _PredictionScreenState extends State<PredictionScreen> {
           IconButton(
             icon: Icon(
               _isPlaying ? Icons.stop_circle_rounded : Icons.play_circle_fill_rounded,
-              color: Theme.of(context).colorScheme.primary,
+              color: const Color(0xFF2ECC71),
               size: 36,
             ),
             onPressed: _toggleAudio,
@@ -188,57 +191,6 @@ class _PredictionScreenState extends State<PredictionScreen> {
     );
   }
 
-  Widget _buildThresholdBar() {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'Seuil de Confiance (Seuil Inconnu):',
-                style: TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold),
-              ),
-              Text(
-                '${(RecognitionService.userThreshold * 100).toInt()}%',
-                style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: 13, fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
-          SliderTheme(
-            data: SliderTheme.of(context).copyWith(
-              trackHeight: 3,
-              thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 7),
-            ),
-            child: Slider(
-              value: RecognitionService.userThreshold,
-              min: 0.30,
-              max: 0.80,
-              divisions: 10,
-              activeColor: Theme.of(context).colorScheme.primary,
-              inactiveColor: Colors.white24,
-              onChanged: (val) {
-                setState(() {
-                  RecognitionService.userThreshold = val;
-                  _isLoading = true;
-                });
-                _runPrediction();
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildSilenceCard(BirdPrediction pred) {
     final bool isSilence = pred.commonName == 'Silence';
     return Padding(
@@ -247,7 +199,7 @@ class _PredictionScreenState extends State<PredictionScreen> {
         child: Container(
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.05),
+            color: const Color(0xFF183226),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(color: Colors.white12),
           ),
@@ -257,7 +209,7 @@ class _PredictionScreenState extends State<PredictionScreen> {
               Icon(
                 isSilence ? Icons.volume_off_rounded : Icons.help_outline_rounded,
                 size: 64,
-                color: Theme.of(context).colorScheme.primary,
+                color: const Color(0xFF2ECC71),
               ),
               const SizedBox(height: 20),
               Text(
@@ -266,13 +218,13 @@ class _PredictionScreenState extends State<PredictionScreen> {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 12),
-                Text(
-                  isSilence 
-                      ? 'The recording volume is too quiet or contains only ambient background noise.'
-                      : 'The audio does not match any of the 27 known Malaysian bird species with high confidence.',
-                  style: const TextStyle(color: Colors.white70, fontSize: 14),
-                  textAlign: TextAlign.center,
-                ),
+              Text(
+                isSilence 
+                    ? 'The recording volume is too quiet or contains only ambient background noise.'
+                    : 'The audio does not match any of the 27 known Malaysian bird species with high confidence.',
+                style: const TextStyle(color: Colors.white70, fontSize: 14),
+                textAlign: TextAlign.center,
+              ),
               const SizedBox(height: 20),
               ElevatedButton.icon(
                 onPressed: _toggleAudio,
@@ -291,120 +243,118 @@ class _PredictionScreenState extends State<PredictionScreen> {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.05),
+        color: const Color(0xFF183226),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: isTop 
-              ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.5) 
+              ? const Color(0xFF2ECC71).withValues(alpha: 0.5) 
               : Colors.white.withValues(alpha: 0.1),
           width: isTop ? 2 : 1,
         ),
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Image
-              Container(
-                height: 150,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: pred.imageUrl.startsWith('assets/')
-                        ? AssetImage(pred.imageUrl) as ImageProvider
-                        : NetworkImage(pred.imageUrl) as ImageProvider,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Colors.black.withValues(alpha: 0.7), Colors.transparent],
-                      begin: Alignment.bottomCenter,
-                      end: Alignment.topCenter,
-                    ),
-                  ),
-                  alignment: Alignment.bottomLeft,
-                  padding: const EdgeInsets.all(16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          pred.commonName,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      if (isTop)
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.primary,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: const Text('Best Choice', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 12)),
-                        ),
-                    ],
-                  ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Image
+          ClipRRect(
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+            child: Container(
+              height: 160,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: pred.imageUrl.startsWith('assets/')
+                      ? AssetImage(pred.imageUrl) as ImageProvider
+                      : NetworkImage(pred.imageUrl) as ImageProvider,
+                  fit: BoxFit.cover,
                 ),
               ),
-              Padding(
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.black.withValues(alpha: 0.8), Colors.transparent],
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                  ),
+                ),
+                alignment: Alignment.bottomLeft,
                 padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      pred.scientificName,
-                      style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.7),
-                        fontStyle: FontStyle.italic,
-                        fontSize: 16,
+                    Expanded(
+                      child: Text(
+                        pred.commonName,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: LinearProgressIndicator(
-                              value: pred.score,
-                              backgroundColor: Colors.white.withValues(alpha: 0.1),
-                              color: isTop ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.secondary,
-                              minHeight: 10,
-                            ),
-                          ),
+                    if (isTop)
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF2ECC71),
+                          borderRadius: BorderRadius.circular(20),
                         ),
-                        const SizedBox(width: 12),
-                        Text(
-                          '${(pred.score * 100).toStringAsFixed(1)}%',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      pred.description,
-                      style: TextStyle(color: Colors.white.withValues(alpha: 0.8)),
-                    ),
+                        child: const Text('Best Match', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 12)),
+                      ),
                   ],
                 ),
               ),
-            ],
+            ),
           ),
-        ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  pred.scientificName,
+                  style: const TextStyle(
+                    color: Color(0xFF2ECC71),
+                    fontStyle: FontStyle.italic,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: LinearProgressIndicator(
+                          value: pred.score,
+                          backgroundColor: Colors.white.withValues(alpha: 0.1),
+                          color: const Color(0xFF2ECC71),
+                          minHeight: 10,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Text(
+                      '${(pred.score * 100).toStringAsFixed(1)}%',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  pred.description,
+                  style: TextStyle(color: Colors.white.withValues(alpha: 0.8)),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
